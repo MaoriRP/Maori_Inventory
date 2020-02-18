@@ -49,3 +49,21 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`, `price`) V
 ('plantpot', 'Plant Pot', 20, 0, 1, 0),
 ('drugscales', 'Scales', 20, 0, 1, 0)
 ;
+
+CREATE TABLE IF NOT EXISTS `trunk_inventory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plate` varchar(8) NOT NULL,
+  `data` text NOT NULL,
+  `owned` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `plate` (`plate`)
+);
+
+CREATE TABLE IF NOT EXISTS `glovebox_inventory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plate` varchar(8) NOT NULL,
+  `data` text NOT NULL,
+  `owned` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `plate` (`plate`)
+);

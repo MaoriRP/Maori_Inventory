@@ -12,6 +12,7 @@ client_scripts {
   "client/main.lua",
   "client/property.lua",
   "client/shop.lua",
+  "client/glovebox.lua",
   "locales/en.lua",
   "config.lua"
 }
