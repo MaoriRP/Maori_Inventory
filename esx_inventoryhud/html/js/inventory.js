@@ -20,7 +20,10 @@ window.addEventListener("message", function (event) {
         } else if (type === "property") {
             $(".info-div").hide();
 			$("#otherInventory").show();
-			ownerHouse = event.data.owner;
+            ownerHouse = event.data.owner;
+        } else if (type === "glovebox") {
+            $(".info-div").show();
+            $("#otherInventory").show();
         } else if (type === "player") {
             $(".info-div").show();
 			$("#otherInventory").show();
@@ -384,6 +387,12 @@ $(document).ready(function () {
                 $.post("http://esx_inventoryhud/TakeFromFast", JSON.stringify({
                     item: itemData
                 }));
+            } else if (type === "glovebox" && itemInventory === "second") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/TakeFromGlovebox", JSON.stringify({
+                    item: itemData,
+                    number: parseInt($("#count").val())
+                }));
             } else if (type === "shop" && itemInventory === "second") {
                 disableInventory(500);
                 $.post("http://maori_inventario/TakeFromShop", JSON.stringify({
@@ -411,6 +420,12 @@ $(document).ready(function () {
                     item: itemData,
                     number: parseInt($("#count").val()),
 					owner : ownerHouse
+                }));
+            } else if (type === "glovebox" && itemInventory === "main") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/PutIntoGlovebox", JSON.stringify({
+                    item: itemData,
+                    number: parseInt($("#count").val())
                 }));
             } else if (type === "player" && itemInventory === "main") {
                 disableInventory(500);
