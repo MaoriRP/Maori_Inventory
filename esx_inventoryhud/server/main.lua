@@ -259,7 +259,7 @@ AddEventHandler("suku:SellItemToPlayer",function(source, type, item, count)
 
     if type == "item_standard" then
         local targetItem = xPlayer.getInventoryItem(item)
-        if targetItem.limit == -1 or ((targetItem.count + count) <= targetItem.limit) then
+        if targetItem.limit == -1 or ((targetItem.count + count) <= targetItem.weight) then
             local list = itemShopList
             for i = 1, #list, 1 do
 				if list[i].name == item then
