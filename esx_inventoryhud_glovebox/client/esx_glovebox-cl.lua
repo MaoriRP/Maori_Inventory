@@ -127,7 +127,8 @@ function openmenuvehicle()
               OpenCoffresInventoryMenu(GetVehicleNumberPlateText(vehFront), Config.VehicleLimit[class], myVeh)
             end
         else
-          exports.pNotify:SendNotification(
+          exports['mythic_notify']:SendAlert('error', _U("no_veh_nearby"))
+          --[[exports.pNotify:SendNotification(
             {
               text = _U("no_veh_nearby"),
               type = "error",
@@ -135,14 +136,15 @@ function openmenuvehicle()
               layout = "bottomCenter",
               queue = "glovebox"
             }
-          )
+          )--]] --Uncomment this to Use pNotify
         end
         lastOpen = true
         GUI.Time = GetGameTimer()
       end
     else
       -- Not their vehicle
-      exports.pNotify:SendNotification(
+      exports['mythic_notify']:SendAlert('error', _U("nacho_veh"))
+      --[[exports.pNotify:SendNotification(
         {
           text = _U("nacho_veh"),
           type = "error",
@@ -150,7 +152,7 @@ function openmenuvehicle()
           layout = "bottomCenter",
           queue = "glovebox"
         }
-      )
+      )--]] --Uncomment this to Use pNotify
     end
   end
 end

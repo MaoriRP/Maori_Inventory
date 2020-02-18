@@ -14,6 +14,9 @@ client_scripts {
   "client/shop.lua",
   "client/glovebox.lua",
   "locales/en.lua",
+  "locales/cs.lua",
+  "locales/fr.lua",
+  "locales/pt.lua",
   "config.lua"
 }
 
@@ -21,6 +24,9 @@ server_scripts {
   "@es_extended/locale.lua",
   "server/main.lua",
   "locales/en.lua",
+  "locales/cs.lua",
+  "locales/fr.lua",
+  "locales/pt.lua",
   "config.lua"
 }
 
@@ -118,4 +124,9 @@ files {
 	'html/img/items/oil_a.png',
 	'html/img/items/oil_b.png',
 	'html/img/items/clothe2.png'
+}
+
+dependencies {
+	"es_extended",
+	"mythic_notify"
 }

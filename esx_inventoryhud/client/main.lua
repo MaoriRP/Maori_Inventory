@@ -181,7 +181,7 @@ RegisterNUICallback(
         end
 
         if not foundPlayers then
-            exports.pNotify:SendNotification(
+            --[[exports.pNotify:SendNotification(
                 {
                     text = _U("players_nearby"),
                     type = "error",
@@ -189,7 +189,8 @@ RegisterNUICallback(
                     layout = "bottomCenter",
                     queue = "inventoryhud"
                 }
-            )
+            )--]] --Uncomment This to Use pNotify
+            exports['mythic_notify']:SendAlert('error', _U("players_nearby"))
         else
             SendNUIMessage(
                 {
@@ -301,7 +302,8 @@ RegisterNUICallback(
             Wait(500)
             loadPlayerInventory()
         else
-            exports.pNotify:SendNotification(
+            exports['mythic_notify']:SendAlert('error', _U("player_nearby"))
+            --[[exports.pNotify:SendNotification(
                 {
                     text = _U("player_nearby"),
                     type = "error",
@@ -309,7 +311,7 @@ RegisterNUICallback(
                     layout = "bottomCenter",
                     queue = "inventoryhud"
                 }
-            )
+            )--]] -- Uncomment This to Use pNotify
         end
         cb("ok")
     end
@@ -472,13 +474,14 @@ function loadPlayerInventory()
 			
 			local texts =  _U("player_info", GetPlayerName(PlayerId()), (weight / 1000), (Config.Limit / 1000))
 			
-			if weight > Config.Limit then
-				TriggerEvent("pNotify:SendNotification",  {
+            if weight > Config.Limit then
+                exports['mythic_notify']:SendAlert('error', 'Inventário Cheio! Não Consegues Andar')
+				--[[TriggerEvent("pNotify:SendNotification",  {
 					text =  'Inventário Cheio! Não Consegues Andar',
 					type = "error",
 					timeout = 2000,
 					layout = "centerLeft"
-				})					
+                })--]] --Uncomment this to Use pNotify
 			   setHurt()
 			   
 			   texts = _U("player_info_full", GetPlayerName(PlayerId()), (weight / 1000), (Config.Limit / 1000))
