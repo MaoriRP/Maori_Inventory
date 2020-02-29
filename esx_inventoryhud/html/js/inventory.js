@@ -35,7 +35,7 @@ window.addEventListener("message", function (event) {
         $(".ui").fadeOut();
         $(".item").remove();
         //$("#otherInventory").html("<div id=\"noSecondInventoryMessage\"></div>");
-       //$("#noSecondInventoryMessage").html(invLocale.secondInventoryNotAvailable);
+        //$("#noSecondInventoryMessage").html(invLocale.secondInventoryNotAvailable);
     } else if (event.data.action == "setItems") {
         inventorySetup(event.data.itemList,event.data.fastItems);
         $(".info-div2").html(event.data.text);
@@ -117,7 +117,7 @@ function inventorySetup(items,fastItems) {
     });
 	$("#playerInventoryFastItems").html("");
     var i;
-	for (i = 1; i < 4 ; i++) { 
+	for (i = 1; i < 6 ; i++) { 
 	  $("#playerInventoryFastItems").append('<div class="slotFast"><div id="itemFast-' + i + '" class="item" >' +
             '<div class="keybind">' + i + '</div><div class="item-count"></div> <div class="item-name"></div> </div ><div class="item-name-bg"></div></div>');
 	}
@@ -174,13 +174,41 @@ function makeDraggables(){
             }
         }
     });
+    $('#itemFast-4').droppable({
+        drop: function (event, ui) {
+            itemData = ui.draggable.data("item");
+            itemInventory = ui.draggable.data("inventory");
+
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
+                    item: itemData,
+                    slot : 4
+                }));
+            }
+        }
+    });
+    $('#itemFast-5').droppable({
+        drop: function (event, ui) {
+            itemData = ui.draggable.data("item");
+            itemInventory = ui.draggable.data("inventory");
+
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
+                    item: itemData,
+                    slot : 5
+                }));
+            }
+        }
+    });
 }
 function secondInventorySetup(items) {
     $("#otherInventory").html("");
     $.each(items, function (index, item) {
         count = setCount(item);
 
-        $("#otherInventory").append('<div class="slot"><div id="itemOther-' + index + '" class="item" style = "background-image: url(\'img/items/' + item.name + '.png\')">' +
+        $("#otherInventory").append('<div class="slotfix"><div id="itemOther-' + index + '" class="item" style = "background-image: url(\'img/items/' + item.name + '.png\')">' +
             '<div class="item-count">' + count + '</div> <div class="item-name">' + item.label + '</div> </div ><div class="item-name-bg"></div></div>');
         $('#itemOther-' + index).data('item', item);
         $('#itemOther-' + index).data('inventory', "second");
@@ -194,7 +222,7 @@ function shopInventorySetup(items) {
         //count = setCount(item)
         cost = setCost(item);
 
-        $("#otherInventory").append('<div class="slot"><div id="itemOther-' + index + '" class="item" style = "background-image: url(\'img/items/' + item.name + '.png\')">' +
+        $("#otherInventory").append('<div class="slotfix"><div id="itemOther-' + index + '" class="item" style = "background-image: url(\'img/items/' + item.name + '.png\')">' +
             '<div class="item-count">' + cost + '</div> <div class="item-name">' + item.label + '</div> </div ><div class="item-name-bg"></div></div>');
         $('#itemOther-' + index).data('item', item);
         $('#itemOther-' + index).data('inventory', "second");
@@ -259,6 +287,18 @@ function setCount(item) {
     return count;
 }
 
+function setCost(item) {
+    cost = item.price
+
+    if (item.price == 0){
+        cost = "Grátis"
+    }
+    if (item.price > 0) {
+        cost = "€" + item.price
+    }
+    return cost;
+}
+
 function formatMoney(n, c, d, t) {
     var c = isNaN(c = Math.abs(c)) ? 2 : c,
         d = d == undefined ? "." : d,
@@ -267,8 +307,20 @@ function formatMoney(n, c, d, t) {
         i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
         j = (j = i.length) > 3 ? j % 3 : 0;
 
-    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t);
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "1" + t);
 };
+
+function itemDescriptionOn(obj) {
+    itemData = $(obj).data("item");
+    if (itemData.label !== undefined) {
+        var element = $("<div class='item-desc-info'><p><span id='item-name'>"+ itemData.label +"</span></p><hr class='item-hr'><p><span id='item-desc'>" + itemData.description + "</span></p><p><span id='item-amount'><span class='strong'>Hoeveelheid</span>: " + itemData.amount + "</span></p><p><span id='item-weight'><span class='strong'>Gewicht p.st.</span>: " + (itemData.weight / 1000).toFixed(2) + " kg</span></p></div>") .fadeIn(200);
+        $("#item-information").html("");
+        $("#item-information").append(element);
+        setTimeout(function () {
+            $(element).fadeOut(100, function () { $(this).remove(); });
+        }, 3500);
+    }
+}
 
 $(document).ready(function () {
     $("#count").focus(function () {
@@ -392,13 +444,20 @@ $(document).ready(function () {
                 $.post("http://esx_inventoryhud/TakeFromGlovebox", JSON.stringify({
                     item: itemData,
                     number: parseInt($("#count").val())
-                }));
+                })); 
             } else if (type === "shop" && itemInventory === "second") {
                 disableInventory(500);
-                $.post("http://maori_inventario/TakeFromShop", JSON.stringify({
+                $.post("http://esx_inventoryhud/TakeFromShop", JSON.stringify({
                     item: itemData,
                     number: parseInt($("#count").val())
                 }));
+            } else if (type === "disc-property" && itemInventory === "second") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/TakeFromDiscProperty", JSON.stringify({
+                    item: itemData,
+                    number: parseInt($("#count").val())
+                }));
+
             }
         }
     });
@@ -424,6 +483,12 @@ $(document).ready(function () {
             } else if (type === "glovebox" && itemInventory === "main") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoGlovebox", JSON.stringify({
+                    item: itemData,
+                    number: parseInt($("#count").val())
+                }));
+            } else if (type === "disc-property" && itemInventory === "main") {
+                disableInventory(500);
+                $.post("http://esx_inventoryhud/PutIntoDiscProperty", JSON.stringify({
                     item: itemData,
                     number: parseInt($("#count").val())
                 }));

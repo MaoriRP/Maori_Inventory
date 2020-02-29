@@ -22,13 +22,6 @@ Citizen.CreateThread(
       )
       Citizen.Wait(0)
     end
-	
-	while ESX.GetPlayerData().job == nil do
-		Citizen.Wait(10)
-	end
-	PlayerData = ESX.GetPlayerData()
-	TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
-    lastChecked = GetGameTimer()
   end
 )
 
@@ -148,44 +141,16 @@ function openmenuvehicle()
               end
             else
               exports['mythic_notify']:SendAlert('error', _U("trunk_closed"))
-              --[[exports.pNotify:SendNotification(
-                {
-                  text = _U("trunk_closed"),
-                  type = "error",
-                  timeout = 3000,
-                  layout = "bottomCenter",
-                  queue = "trunk"
-                }
-              )--]] --Uncomment this to use pNotify
             end
           end
         else
           exports['mythic_notify']:SendAlert('error', _U("no_veh_nearby"))
-          --[[exports.pNotify:SendNotification(
-            {
-              text = _U("no_veh_nearby"),
-              type = "error",
-              timeout = 3000,
-              layout = "bottomCenter",
-              queue = "trunk"
-            }
-          )--]] --Uncomment this to use pNotify
         end
         lastOpen = true
         GUI.Time = GetGameTimer()
       end
     else
       exports['mythic_notify']:SendAlert('error', _U("nacho_veh"))
-      -- Not their vehicle
-      --[[exports.pNotify:SendNotification(
-        {
-          text = _U("nacho_veh"),
-          type = "error",
-          timeout = 3000,
-          layout = "bottomCenter",
-          queue = "trunk"
-        }
-      )--]] --Uncomment this to use pNotify
     end
   end
 end

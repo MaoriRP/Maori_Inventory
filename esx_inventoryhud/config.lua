@@ -1,5 +1,5 @@
 Config = {}
-Config.Locale = "pt"
+Config.Locale = "en"
 Config.IncludeCash = true -- Include cash in inventory?
 Config.IncludeWeapons = true -- Include weapons in inventory?
 Config.IncludeAccounts = true -- Include accounts (bank, black money, ...)?
@@ -47,7 +47,7 @@ Config.Shops = {
         },
         Items = {
             {name = 'bread'},
-            {name = 'water'},
+            {name = 'water'}
         }
     },
 
@@ -270,10 +270,12 @@ Config.localWeight = {
 	marijuana = 25,
 	cannabis = 25,
 	WEAPON_SMG = 50,
-	WEAPON_CARBINERIFLE = 50,
-	WEAPON_SPECIALCARBINE = 50,
-	WEAPON_ASSAULTRIFLE = 50,
-	WEAPON_PUMPSHOTGUN = 50,
-	WEAPON_PISTOL = 20,
+	WEAPON_CARBINERIFLE = 3000,
+	WEAPON_SPECIALCARBINE = 3000,
+	WEAPON_ASSAULTRIFLE = 3000,
+	WEAPON_PUMPSHOTGUN = 2000,
+	WEAPON_PISTOL = 1000,
+	WEAPON_APPISTOL = 1000,
+	WEAPON_MACHINEPISTOL = 1500,
+	WEAPON_COMBATPISTOL = 1000
 }
-

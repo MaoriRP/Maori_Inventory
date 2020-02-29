@@ -18,56 +18,57 @@
     top: 0;
     width: 100vw;    
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0);
     display: none;
     z-index: 0;
 }
 
 .inventory {
     position: absolute;
-    left: 73%;
+    left: 25%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 740px;
+    width: 620px;
     height: 600px;
     box-shadow: 1px 1px 10px rgba(58, 58, 58, 0.3);
     background-color: rgba(235, 235, 235, 0.01);
 }
 
 #playerInventory {
-    width: 740px;
+    width: 620px;
     height: 600px;
     float: left;
     overflow-y: scroll;
 }
 
 #playerInventoryFastItems {
-    width: 370px;
+    width: 650px;
     height: 50px;
 	position : absolute;
-	bottom : -9.4%;
-	right:-1%;
+	bottom : 90.4%;
+	left: 0%;
 	z-index: 100;
 	float:left;
 }
 
 #controls {
-    width: 400px;
-    height: 50px;
-    float: left;
+    width: 100px;
+    height: 100px;
+    float: center;
     position: absolute;
-    left: 0;
-    top: 101%;
+    left: 110%;
+    top: 30%;
 }
 
 #otherInventory {
-    width: 265px;
-    height: 500px;
+    width: 620px;
+    height: 300px;
     float: left;
     overflow-y: scroll;
     position: absolute;
-	top: 25%;
-    left:0%;
+	top: 0%;
+    left: 138%;
+    box-shadow: 1px 1px 10px rgba(58, 58, 58, 0.3);
     background-color: rgba(235, 235, 235, 0.01);
 }
 
@@ -91,6 +92,16 @@ input[type=number] {
     float: left;
     width: 117px;
     height: 117px;
+    bottom : -21.4%;
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 2px;
+    position: relative;
+}
+
+.slotfix {
+    float: left;
+    width: 117px;
+    height: 117px;
     background-color: rgba(0, 0, 0, 0.6);
     margin: 2px;
     position: relative;
@@ -98,7 +109,9 @@ input[type=number] {
 
 .slot:hover {
     opacity: 0.8;
+    background-color: rgba(110, 110, 110, 0.5);
 }
+
 .slotFast {
     float: left;
     width: 117px;
@@ -156,7 +169,7 @@ input[type=number] {
     width: 20px;
     height: 20px;
     z-index: 500;
-	background-color: rgba(0, 0, 0, 0.6);
+	background-color: rgba(0, 0, 0, 0.01);
 	text-align: center;
 }
 
@@ -166,26 +179,29 @@ input[type=number] {
 }
 
 .info-div {
-    text-align: center;
+    text-align: left;
     padding: 5px;
-    background: linear-gradient(120deg,#000000b0,#434343b0);
+    background-color: rgba(110, 110, 110, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     width: 50%;
     position: absolute;
-    left: -220%;
-    top: 20%;
+    left: 270%;
+    top: -215%;
+    width: 174px;
     transform: translate(-50%, -50%);
 }
 
 .info-div2 {
-    text-align: center;
+    text-align: left;
     padding: 5px;
-    background-color: rgba(20, 20, 20, 0);
-    width: 80%;
+    background-color: rgba(110, 110, 110, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 174px;
     position: absolute;
-    left: 55%;
-    top: 50%;
+    left: 15.5%;
+    top: -6%;
     transform: translate(-50%, -50%);
-}*/
+}
 
 .controls-div {
     position: relative;
@@ -196,13 +212,14 @@ input[type=number] {
 }
 
 .control {
-    width: 80px;
-    height: 40px;
-    background-color: rgb(0, 0, 0, 0.5);
+    width: 150px;
+    height: 47px;
+    background-color: rgba(110, 110, 110, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     margin: 5px;
     text-align: center;
     vertical-align: middle;
-    line-height: 40px;
+    line-height: 41.5px;
 	float: left;
 }
 
@@ -212,6 +229,48 @@ input[type=number] {
 
 .hoverControl {
     background-color: rgba(235, 235, 235, 0.1);
+}
+
+.used-item-slot {
+    position: absolute;
+    right: 50px;
+    bottom: 50%;
+    height: 125px;
+    width: 110px;
+    background-color: rgba(124, 124, 124, 0.356);
+    border-style: solid;
+    border-color: rgba(255,255,255,0.2);
+    border-width: 1px 1px 1px 1px;
+}
+
+#used-item-image {
+    height: 125px;
+    width: 110px;
+    background-image: url(img/used-item.png);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position-x: 0;
+}
+
+.added-item-slot {
+    position: absolute;
+    right: 50px;
+    bottom: 50%;
+    height: 125px;
+    width: 110px;
+    background-color: rgba(124, 124, 124, 0.356);
+    border-style: solid;
+    border-color: rgba(255,255,255,0.2);
+    border-width: 1px 1px 1px 1px;
+}
+
+#added-item-image {
+    height: 125px;
+    width: 110px;
+    background-image: url(img/added-item.png);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position-x: 0;
 }
 
 .item-name-bg {
@@ -231,7 +290,7 @@ input[type=number] {
 #playerInventory::-webkit-scrollbar,
 #otherInventory::-webkit-scrollbar {
     width: 10px;
-    background-color: rgba(182, 0, 0, 0.25);
+    background-color: rgba(182, 0, 0, 0.4);
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 

@@ -147,6 +147,8 @@ function closeInventory()
         }
     )
     SetNuiFocus(false, false)
+    TriggerScreenblurFadeOut(0)
+    ClearPedSecondaryTask(GetPlayerPed(-1))
 end
 
 RegisterNUICallback(
@@ -316,6 +318,16 @@ RegisterNUICallback(
         cb("ok")
     end
 )
+
+function shouldCloseInventory(itemName)
+    for index, value in ipairs(Config.CloseUiItems) do
+        if value == itemName then
+            return true
+        end
+    end
+
+    return false
+end
 
 function shouldSkipAccount(accountName)
     for index, value in ipairs(Config.ExcludeAccountsList) do
@@ -601,8 +613,15 @@ function setTrunkInventoryData(data, blackMoney, inventory, weapons)
 end
 
 function openTrunkInventory()
+    TriggerScreenblurFadeIn(0)
     loadPlayerInventory()
     isInInventory = true
+    local playerPed = GetPlayerPed(-1)
+    if not IsEntityPlayingAnim(playerPed, 'mini@repair', 'fixing_a_player', 3) then
+        ESX.Streaming.RequestAnimDict('mini@repair', function()
+            TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
+        end)
+    end
 
     SendNUIMessage(
         {
@@ -731,6 +750,33 @@ Citizen.CreateThread(
 					end
 				end
             end
+            if IsDisabledControlJustReleased(1, Keys["4"]) then
+                if fastWeapons[4] ~= nil then
+					if GetSelectedPedWeapon(GetPlayerPed(-1)) == GetHashKey(fastWeapons[4]) then
+						SetCurrentPedWeapon(GetPlayerPed(-1), "WEAPON_UNARMED",true)
+					else
+						SetCurrentPedWeapon(GetPlayerPed(-1), fastWeapons[4],true)
+					end
+				end
+            end
+            if IsDisabledControlJustReleased(1, Keys["5"]) then
+                if fastWeapons[5] ~= nil then
+					if GetSelectedPedWeapon(GetPlayerPed(-1)) == GetHashKey(fastWeapons[5]) then
+						SetCurrentPedWeapon(GetPlayerPed(-1), "WEAPON_UNARMED",true)
+					else
+						SetCurrentPedWeapon(GetPlayerPed(-1), fastWeapons[5],true)
+					end
+				end
+            end
         end
     end
 )
+
+
+--Add Items--
+
+RegisterNetEvent('esx_inventoryhud:client:addItem')
+AddEventHandler('esx_inventoryhud:client:addItem', function(itemname, itemlabel)
+    local data = { name = itemname, label = itemlabel }
+    SendNUIMessage({type = "addInventoryItem", addItemData = data})
+end)

@@ -82,7 +82,7 @@ Config = {}
 Config.CheckOwnership = false -- If true, Only owner of vehicle can store items in glovebox.
 Config.AllowPolice = false -- If true, police will be able to search players' glovebox.
 
-Config.Locale = "pt"
+Config.Locale = "en"
 
 Config.OpenKey = Keys["Y"]
 

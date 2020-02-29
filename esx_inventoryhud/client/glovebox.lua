@@ -5,6 +5,7 @@ AddEventHandler(
     "esx_inventoryhud:openGloveboxInventory",
     function(data, blackMoney, inventory, weapons)
         setGloveboxInventoryData(data, blackMoney, inventory, weapons)
+        TriggerScreenblurFadeIn(0)
         openGloveboxInventory()
     end
 )

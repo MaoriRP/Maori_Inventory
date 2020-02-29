@@ -24,27 +24,21 @@ AddEventHandler(
     local vehicules = {}
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
-    if xPlayer ~= nil then
-		MySQL.Async.fetchAll(
-		  "SELECT * FROM owned_vehicles WHERE owner = @owner",
-		  {
-			["@owner"] = xPlayer.identifier
-		  },
-		  function(result)
-			if result ~= nil and #result > 0 then
-			  for _, v in pairs(result) do
-				local vehicle = json.decode(v.vehicle)
-				table.insert(vehicules, {plate = vehicle.plate})
-			  end
-			end
-			TriggerClientEvent("esx_trunk_inventory:setOwnedVehicule", _source, vehicules)
-		  end
-		)
-	else
-		print("**************************************************")
-		print("**********ERRO INVENTÁRIO CARROS *****************")
-		print("**************************************************")
-	end
+    MySQL.Async.fetchAll(
+      "SELECT * FROM owned_vehicles WHERE owner = @owner",
+      {
+        ["@owner"] = xPlayer.identifier
+      },
+      function(result)
+        if result ~= nil and #result > 0 then
+          for _, v in pairs(result) do
+            local vehicle = json.decode(v.vehicle)
+            table.insert(vehicules, {plate = vehicle.plate})
+          end
+        end
+        TriggerClientEvent("esx_trunk_inventory:setOwnedVehicule", _source, vehicules)
+      end
+    )
   end
 )
 
@@ -141,7 +135,7 @@ AddEventHandler(
 
     if type == "item_standard" then
       local targetItem = xPlayer.getInventoryItem(item)
-      if targetItem.limit == -1 or ((targetItem.count + count) <= targetItem.weight) then
+      if targetItem.limit == -1 or xPlayer.canCarryItem then
         TriggerEvent(
           "esx_trunk:getSharedDataStore",
           plate,
@@ -156,20 +150,9 @@ AddEventHandler(
                   else
                     coffre[i].count = coffre[i].count - count
                   end
-
                   break
                 else
-                  TriggerClientEvent(
-                    "pNotify:SendNotification",
-                    _source,
-                    {
-                      text = _U("invalid_quantity"),
-                      type = "error",
-                      queue = "trunk",
-                      timeout = 3000,
-                      layout = "bottomCenter"
-                    }
-                  )
+                  TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_quantity") } )
                 end
               end
             end
@@ -199,17 +182,7 @@ AddEventHandler(
           end
         )
       else
-        TriggerClientEvent(
-          "pNotify:SendNotification",
-          _source,
-          {
-            text = _U("player_inv_no_space"),
-            type = "error",
-            queue = "trunk",
-            timeout = 3000,
-            layout = "bottomCenter"
-          }
-        )
+        TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("player_inv_no_space") } )
       end
     end
 
@@ -245,17 +218,7 @@ AddEventHandler(
             data = {plate = plate, max = max, myVeh = owned, text = text}
             TriggerClientEvent("esx_inventoryhud:refreshTrunkInventory", _source, data, blackMoney, items, weapons)
           else
-            TriggerClientEvent(
-              "pNotify:SendNotification",
-              _source,
-              {
-                text = _U("invalid_amount"),
-                type = "error",
-                queue = "trunk",
-                timeout = 3000,
-                layout = "bottomCenter"
-              }
-            )
+            TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_amount") } )
           end
         end
       )
@@ -351,21 +314,11 @@ AddEventHandler(
               )
             end
             if (getTotalInventoryWeight(plate) + (getItemWeight(item) * count)) > max then
-              TriggerClientEvent(
-                "pNotify:SendNotification",
-                _source,
-                {
-                  text = _U("insufficient_space"),
-                  type = "error",
-                  queue = "trunk",
-                  timeout = 3000,
-                  layout = "bottomCenter"
-                }
-              )
+              TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("insufficient_space") } )
             else
               -- Checks passed, storing the item.
-              store.set("coffre", coffre)
               xPlayer.removeInventoryItem(item, count)
+			  store.set("coffre", coffre)
 
               MySQL.Async.execute(
                 "UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate",
@@ -378,17 +331,7 @@ AddEventHandler(
           end
         )
       else
-        TriggerClientEvent(
-          "pNotify:SendNotification",
-          _source,
-          {
-            text = _U("invalid_quantity"),
-            type = "error",
-            queue = "trunk",
-            timeout = 3000,
-            layout = "bottomCenter"
-          }
-        )
+        TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_quantity") } )
       end
     end
 
@@ -409,17 +352,7 @@ AddEventHandler(
             end
 
             if (getTotalInventoryWeight(plate) + blackMoney[1].amount / 10) > max then
-              TriggerClientEvent(
-                "pNotify:SendNotification",
-                _source,
-                {
-                  text = _U("insufficient_space"),
-                  type = "error",
-                  queue = "trunk",
-                  timeout = 3000,
-                  layout = "bottomCenter"
-                }
-              )
+              TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("insufficient_space") } )
             else
               -- Checks passed. Storing the item.
               xPlayer.removeAccountMoney(item, count)
@@ -436,17 +369,7 @@ AddEventHandler(
           end
         )
       else
-        TriggerClientEvent(
-          "pNotify:SendNotification",
-          _source,
-          {
-            text = _U("invalid_amount"),
-            type = "error",
-            queue = "trunk",
-            timeout = 3000,
-            layout = "bottomCenter"
-          }
-        )
+        TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_amount") } )
       end
     end
 
@@ -470,17 +393,7 @@ AddEventHandler(
             }
           )
           if (getTotalInventoryWeight(plate) + (getItemWeight(item))) > max then
-            TriggerClientEvent(
-              "pNotify:SendNotification",
-              _source,
-              {
-                text = _U("invalid_amount"),
-                type = "error",
-                queue = "trunk",
-                timeout = 3000,
-                layout = "bottomCenter"
-              }
-            )
+            TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("insufficient_space") } )
           else
             store.set("weapons", storeWeapons)
             xPlayer.removeWeapon(item)

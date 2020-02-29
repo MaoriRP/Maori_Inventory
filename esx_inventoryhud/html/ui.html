@@ -30,6 +30,7 @@
             </div>
             <div id="controls">
                 <div class="info-div"></div>
+                <div class="weight-div"></div>
                 <div class="controls-div">
                     <input type="number" class="control" id="count" value="1">
                     <div class="control" id="use"></div>
@@ -38,11 +39,15 @@
                 </div>
             </div>
            
-        </div>
-		<div id="otherInventory">
+            <div id="otherInventory">
                 <div id="noSecondInventoryMessage">
                 </div>
             </div>
+            <div style="width: 100%;bottom: 0;top: auto;">
+                <span align="left" class="info-div2" style="float: left;"></span>
+                <span align="right" class="info-div" style="float: right;"></span>
+            </div>
+        </div>
     </div>
 
     <div id="dialog">
@@ -60,5 +65,12 @@
         $("#noSecondInventoryMessage").html(invLocale.secondInventoryNotAvailable);
     });
 </script>
+<style>
+    body {
+      height: 1080px; 
+      width: 1920px;
+      overflow: hidden;
+    }
+</style>
 
 </html>

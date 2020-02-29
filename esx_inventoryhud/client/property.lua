@@ -2,8 +2,14 @@ RegisterNetEvent("esx_inventoryhud:openPropertyInventory")
 AddEventHandler(
     "esx_inventoryhud:openPropertyInventory",
     function(data)
+        TriggerScreenblurFadeIn(0)
         setPropertyInventoryData(data)
         openPropertyInventory()
+        if not IsEntityPlayingAnim(playerPed, 'mini@repair', 'fixing_a_player', 3) then
+            ESX.Streaming.RequestAnimDict('mini@repair', function()
+                TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
+            end)
+        end
     end
 )
 

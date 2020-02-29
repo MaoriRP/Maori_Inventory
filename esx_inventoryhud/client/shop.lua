@@ -1,4 +1,6 @@
 local shopData = nil
+ESX = nil
+
 
 Keys = {
 	["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57, 
@@ -23,24 +25,28 @@ Citizen.CreateThread(function()
             if IsInRegularShopZone(coords) then
                 if IsControlJustReleased(0, Keys["E"]) then
                     OpenShopInv("regular")
+                    TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInRobsLiquorZone(coords) then
                 if IsControlJustReleased(0, Keys["E"]) then
                     OpenShopInv("robsliquor")
+                    TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInYouToolZone(coords) then
                 if IsControlJustReleased(0, Keys["E"]) then
                     OpenShopInv("youtool")
+                    TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInPrisonShopZone(coords) then
                 if IsControlJustReleased(0, Keys["E"]) then
                     OpenShopInv("prison")
+                    TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
@@ -48,6 +54,7 @@ Citizen.CreateThread(function()
                 if IsControlJustReleased(0, Keys["E"]) then
                     if Licenses['weapon'] ~= nil then
                         OpenShopInv("weaponshop")
+                        TriggerScreenblurFadeIn(0)
                         Citizen.Wait(2000)
                     else
                         exports['mythic_notify']:SendAlert('error', 'You need a Fire Arms license before you can buy weapons')
