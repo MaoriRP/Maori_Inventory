@@ -2,7 +2,7 @@
  
 Custom Version of esx_inventoryhud done for MaoriRP
 
-![Video](https://streamable.com/xeq6j)
+[Video] - (https://streamable.com/xeq6j)
 
 Features:
 -Glovebox
