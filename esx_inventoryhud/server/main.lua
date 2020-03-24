@@ -36,7 +36,7 @@ AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type,
                     sourceXPlayer.removeInventoryItem(itemName, itemCount)
                     targetXPlayer.addInventoryItem(itemName, itemCount)
                 else
-		exports['mythic_notify']:DoCustomHudText('error', 'You cannot carry this item!!',4000)
+		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'You cannot Hold this item'})
                 end
             end
 		elseif type == "item_money" then
