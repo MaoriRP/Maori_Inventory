@@ -131,7 +131,7 @@ function openmenuvehicle()
           if ESX.UI.Menu.IsOpen("default", GetCurrentResourceName(), "inventory") then
             SetVehicleDoorShut(vehFront, 5, false)
           else
-            if locked == 1 or class == 15 or class == 16 or class == 14 then
+            if locked == 1 or class == 15 or class == 16 or class == 14 or class == 18 then
               SetVehicleDoorOpen(vehFront, 5, false, false)
               ESX.UI.Menu.CloseAll()
 
