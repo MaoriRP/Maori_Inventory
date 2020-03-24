@@ -27,17 +27,18 @@ AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type,
 		local sourceXPlayer = ESX.GetPlayerFromId(_source)
 		local targetXPlayer = ESX.GetPlayerFromId(target)
 
-		if type == "item_standard" then
-			local sourceItem = sourceXPlayer.getInventoryItem(itemName)
-			local targetItem = targetXPlayer.getInventoryItem(itemName)
+		     if type == "item_standard" then
+            local sourceItem = sourceXPlayer.getInventoryItem(itemName)
+            local targetItem = targetXPlayer.getInventoryItem(itemName)
 
-			if itemCount > 0 and sourceItem.count >= itemCount then
-				if targetItem.limit == -1 or xPlayer.canCarryItem then
-				else
-					sourceXPlayer.removeInventoryItem(itemName, itemCount)
-					targetXPlayer.addInventoryItem(itemName, itemCount)
-				end
-			end
+            if itemCount > 0 and sourceItem.count >= itemCount then
+                if targetItem.limit == -1 or targetXPlayer.canCarryItem then
+                    sourceXPlayer.removeInventoryItem(itemName, itemCount)
+                    targetXPlayer.addInventoryItem(itemName, itemCount)
+                else
+		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'You cannot Hold this item'})
+                end
+            end
 		elseif type == "item_money" then
 			if itemCount > 0 and sourceXPlayer.getMoney() >= itemCount then
 				sourceXPlayer.removeMoney(itemCount)
