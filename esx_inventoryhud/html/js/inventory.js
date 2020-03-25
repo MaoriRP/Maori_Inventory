@@ -115,7 +115,7 @@ function inventorySetup(items,fastItems) {
         $('#item-' + index).data('item', item);
         $('#item-' + index).data('inventory', "main");
     });
-	$("#playerInventoryFastItems").html("");
+	/*$("#playerInventoryFastItems").html("");
     var i;
 	for (i = 1; i < 6 ; i++) { 
 	  $("#playerInventoryFastItems").append('<div class="slotFast"><div id="itemFast-' + i + '" class="item" >' +
@@ -128,16 +128,16 @@ function inventorySetup(items,fastItems) {
         $('#itemFast-' + item.slot).data('item', item);
         $('#itemFast-' + item.slot).data('inventory', "fast");
     });
-	makeDraggables()
+	makeDraggables()*/
 
 }
-function makeDraggables(){
+/*function makeDraggables(){
 	$('#itemFast-1').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
 
-            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_standard") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
                     item: itemData,
@@ -151,7 +151,7 @@ function makeDraggables(){
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
 
-            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_standard") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
                     item: itemData,
@@ -165,7 +165,7 @@ function makeDraggables(){
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
 
-            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_standard") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
                     item: itemData,
@@ -179,7 +179,7 @@ function makeDraggables(){
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
 
-            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_standard") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
                     item: itemData,
@@ -193,7 +193,7 @@ function makeDraggables(){
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
 
-            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_weapon") {
+            if (type === "normal" && (itemInventory === "main" || itemInventory === "fast") && itemData.type === "item_standard") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/PutIntoFast", JSON.stringify({
                     item: itemData,
@@ -202,7 +202,7 @@ function makeDraggables(){
             }
         }
     });
-}
+}*/
 function secondInventorySetup(items) {
     $("#otherInventory").html("");
     $.each(items, function (index, item) {
@@ -269,7 +269,7 @@ function setCount(item) {
     count = item.count
 
     if (item.limit > 0) {
-        count = item.count + " / " + item.limit
+        count = item.count + " (" + item.limit + "kg)"
     }
 
     if (item.type === "item_weapon") {
@@ -294,7 +294,7 @@ function setCost(item) {
         cost = "Grátis"
     }
     if (item.price > 0) {
-        cost = "€" + item.price
+        cost = "$" + item.price
     }
     return cost;
 }
@@ -434,11 +434,11 @@ $(document).ready(function () {
                     item: itemData,
                     number: parseInt($("#count").val())
                 }));
-            }else if (type === "normal" && itemInventory === "fast") {
+            /*}else if (type === "normal" && itemInventory === "fast") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/TakeFromFast", JSON.stringify({
                     item: itemData
-                }));
+                }));*/
             } else if (type === "glovebox" && itemInventory === "second") {
                 disableInventory(500);
                 $.post("http://esx_inventoryhud/TakeFromGlovebox", JSON.stringify({

@@ -7,13 +7,26 @@ TriggerEvent(
 	end
 )
 
-ESX.RegisterServerCallback(
+--[[ESX.RegisterServerCallback(
 	"esx_inventoryhud:getPlayerInventory",
 	function(source, cb, target)
 		local targetXPlayer = ESX.GetPlayerFromId(target)
 
 		if targetXPlayer ~= nil then
 			cb({inventory = targetXPlayer.inventory, money = targetXPlayer.getMoney(), accounts = targetXPlayer.accounts, weapons = targetXPlayer.loadout})
+		else
+			cb(nil)
+		end
+	end
+)]]
+
+ESX.RegisterServerCallback(
+	"esx_inventoryhud:getPlayerInventory",
+	function(source, cb, target)
+		local targetXPlayer = ESX.GetPlayerFromId(target)
+
+		if targetXPlayer ~= nil then
+			cb({inventory = targetXPlayer.inventory, money = targetXPlayer.getMoney(), accounts = targetXPlayer.accounts})
 		else
 			cb(nil)
 		end
@@ -27,18 +40,17 @@ AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type,
 		local sourceXPlayer = ESX.GetPlayerFromId(_source)
 		local targetXPlayer = ESX.GetPlayerFromId(target)
 
-		     if type == "item_standard" then
-            local sourceItem = sourceXPlayer.getInventoryItem(itemName)
-            local targetItem = targetXPlayer.getInventoryItem(itemName)
+		if type == "item_standard" then
+			local sourceItem = sourceXPlayer.getInventoryItem(itemName)
+			local targetItem = targetXPlayer.getInventoryItem(itemName)
 
-            if itemCount > 0 and sourceItem.count >= itemCount then
-                if targetItem.limit == -1 or targetXPlayer.canCarryItem then
-                    sourceXPlayer.removeInventoryItem(itemName, itemCount)
-                    targetXPlayer.addInventoryItem(itemName, itemCount)
-                else
-		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'You cannot Hold this item'})
-                end
-            end
+			if itemCount > 0 and sourceItem.count >= itemCount then
+				if targetItem.limit == -1 or xPlayer.canCarryItem then
+				else
+					sourceXPlayer.removeInventoryItem(itemName, itemCount)
+					targetXPlayer.addInventoryItem(itemName, itemCount)
+				end
+			end
 		elseif type == "item_money" then
 			if itemCount > 0 and sourceXPlayer.getMoney() >= itemCount then
 				sourceXPlayer.removeMoney(itemCount)
@@ -163,7 +175,7 @@ ESX.RegisterServerCallback("suku:getShopItems", function(source, cb, shoptype)
 				end
 			end
 		end
-		if shoptype == "weaponshop" then
+		--[[if shoptype == "weaponshop" then
 			local weapons = Config.Shops.WeaponShop.Weapons
 			for _, v in pairs(Config.Shops.WeaponShop.Weapons) do
 				if v.name == itemResult[i].name then
@@ -206,6 +218,86 @@ ESX.RegisterServerCallback("suku:getShopItems", function(source, cb, shoptype)
 						name = itemInformation[itemResult[i].name].name,
 						label = itemInformation[itemResult[i].name].label,
 						limit = itemInformation[itemResult[i].name].limit,
+						rare = itemInformation[itemResult[i].name].rare,
+						can_remove = itemInformation[itemResult[i].name].can_remove,
+						price = itemInformation[itemResult[i].name].price,
+						count = 99999999
+					})
+				end
+			end
+		end]]
+		if shoptype == "weaponshop" then
+			for _, v in pairs(Config.Shops.WeaponShop.Items) do
+				if v.name == itemResult[i].name then
+					table.insert(itemShopList, {
+						type = "item_standard",
+						name = itemInformation[itemResult[i].name].name,
+						label = itemInformation[itemResult[i].name].label,
+						weight = itemInformation[itemResult[i].name].limit,
+						rare = itemInformation[itemResult[i].name].rare,
+						can_remove = itemInformation[itemResult[i].name].can_remove,
+						price = itemInformation[itemResult[i].name].price,
+						count = 99999999
+					})
+				end
+			end
+		end
+		if shoptype == "ltdgasoline" then
+			for _, v in pairs(Config.Shops.LTDgasoline.Items) do
+				if v.name == itemResult[i].name then
+					table.insert(itemShopList, {
+						type = "item_standard",
+						name = itemInformation[itemResult[i].name].name,
+						label = itemInformation[itemResult[i].name].label,
+						weight = itemInformation[itemResult[i].name].limit,
+						rare = itemInformation[itemResult[i].name].rare,
+						can_remove = itemInformation[itemResult[i].name].can_remove,
+						price = itemInformation[itemResult[i].name].price,
+						count = 99999999
+					})
+				end
+			end
+		end
+		if shoptype == "megamall" then
+			for _, v in pairs(Config.Shops.MegaMall.Items) do
+				if v.name == itemResult[i].name then
+					table.insert(itemShopList, {
+						type = "item_standard",
+						name = itemInformation[itemResult[i].name].name,
+						label = itemInformation[itemResult[i].name].label,
+						weight = itemInformation[itemResult[i].name].limit,
+						rare = itemInformation[itemResult[i].name].rare,
+						can_remove = itemInformation[itemResult[i].name].can_remove,
+						price = itemInformation[itemResult[i].name].price,
+						count = 99999999
+					})
+				end
+			end
+		end
+		if shoptype == "bahamamama" then
+			for _, v in pairs(Config.Shops.SexShop.Items) do
+				if v.name == itemResult[i].name then
+					table.insert(itemShopList, {
+						type = "item_standard",
+						name = itemInformation[itemResult[i].name].name,
+						label = itemInformation[itemResult[i].name].label,
+						weight = itemInformation[itemResult[i].name].limit,
+						rare = itemInformation[itemResult[i].name].rare,
+						can_remove = itemInformation[itemResult[i].name].can_remove,
+						price = itemInformation[itemResult[i].name].price,
+						count = 99999999
+					})
+				end
+			end
+		end
+		if shoptype == "vending" then
+			for _, v in pairs(Config.Shops.Vending.Items) do
+				if v.name == itemResult[i].name then
+					table.insert(itemShopList, {
+						type = "item_standard",
+						name = itemInformation[itemResult[i].name].name,
+						label = itemInformation[itemResult[i].name].label,
+						weight = itemInformation[itemResult[i].name].limit,
 						rare = itemInformation[itemResult[i].name].rare,
 						can_remove = itemInformation[itemResult[i].name].can_remove,
 						price = itemInformation[itemResult[i].name].price,
@@ -407,4 +499,9 @@ AddEventHandler('suku:buyLicense', function ()
 	else
 		TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'You do not have enough money!' })
 	end
+end)
+
+ESX.RegisterUsableItem('assaultrifle', function(source)
+	local weapon = 'assaultrifle'
+	TriggerClientEvent('scrubz_weaponsystem_cl:addWeapon', source, weapon)
 end)

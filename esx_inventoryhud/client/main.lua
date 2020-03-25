@@ -1,14 +1,80 @@
 local Keys = {
-    ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
-    ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
-    ["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
-    ["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
-    ["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
-    ["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70,
-    ["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
-    ["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
-    ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
-  }
+    ["ESC"] = 322,
+    ["F1"] = 288,
+    ["F2"] = 289,
+    ["F3"] = 170,
+    ["F5"] = 166,
+    ["F6"] = 167,
+    ["F7"] = 168,
+    ["F8"] = 169,
+    ["F9"] = 56,
+    ["F10"] = 57,
+    ["~"] = 243,
+    ["1"] = 157,
+    ["2"] = 158,
+    ["3"] = 160,
+    ["4"] = 164,
+    ["5"] = 165,
+    ["6"] = 159,
+    ["7"] = 161,
+    ["8"] = 162,
+    ["9"] = 163,
+    ["-"] = 84,
+    ["="] = 83,
+    ["BACKSPACE"] = 177,
+    ["TAB"] = 37,
+    ["Q"] = 44,
+    ["W"] = 32,
+    ["E"] = 38,
+    ["R"] = 45,
+    ["T"] = 245,
+    ["Y"] = 246,
+    ["U"] = 303,
+    ["P"] = 199,
+    ["["] = 39,
+    ["]"] = 40,
+    ["ENTER"] = 18,
+    ["CAPS"] = 137,
+    ["A"] = 34,
+    ["S"] = 8,
+    ["D"] = 9,
+    ["F"] = 23,
+    ["G"] = 47,
+    ["H"] = 74,
+    ["K"] = 311,
+    ["L"] = 182,
+    ["LEFTSHIFT"] = 21,
+    ["Z"] = 20,
+    ["X"] = 73,
+    ["C"] = 26,
+    ["V"] = 0,
+    ["B"] = 29,
+    ["N"] = 249,
+    ["M"] = 244,
+    [","] = 82,
+    ["."] = 81,
+    ["LEFTCTRL"] = 36,
+    ["LEFTALT"] = 19,
+    ["SPACE"] = 22,
+    ["RIGHTCTRL"] = 70,
+    ["HOME"] = 213,
+    ["PAGEUP"] = 10,
+    ["PAGEDOWN"] = 11,
+    ["DELETE"] = 178,
+    ["LEFT"] = 174,
+    ["RIGHT"] = 175,
+    ["TOP"] = 27,
+    ["DOWN"] = 173,
+    ["NENTER"] = 201,
+    ["N4"] = 108,
+    ["N5"] = 60,
+    ["N6"] = 107,
+    ["N+"] = 96,
+    ["N-"] = 97,
+    ["N7"] = 117,
+    ["N8"] = 61,
+    ["N9"] = 118
+}
 
 local trunkData = nil
 local isInInventory = false
@@ -16,7 +82,9 @@ ESX = nil
 local fastWeapons = {
 	[1] = nil,
 	[2] = nil,
-	[3] = nil
+    [3] = nil,
+    [4] = nil,
+    [5] = nil
 }
 
 Citizen.CreateThread(
@@ -195,22 +263,24 @@ RegisterNUICallback(
     end
 )
 
-RegisterNUICallback(
-    "DropItem",
-    function(data, cb)
-        if IsPedSittingInAnyVehicle(playerPed) then
-            return
-        end
-
-        if type(data.number) == "number" and math.floor(data.number) == data.number then
-            TriggerServerEvent("esx:removeInventoryItem", data.item.type, data.item.name, data.number)
-        end
-
-        Wait(500)
-        loadPlayerInventory()
-
-        cb("ok")
+RegisterNUICallback("DropItem",function(data, cb)
+    if IsPedSittingInAnyVehicle(playerPed) then
+        return
     end
+
+    if type(data.number) == "number" and math.floor(data.number) == data.number then
+        TriggerServerEvent("esx:removeInventoryItem", data.item.type, data.item.name, data.number)
+    end
+    Wait(250)
+    loadPlayerInventory()
+    local dict = "pickup_object"		
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Citizen.Wait(0)
+    end
+    TaskPlayAnim(GetPlayerPed(-1), dict, "pickup_low", 8.0, 8.0, -1, 0, 1, false, false, false)
+    cb("ok")
+end
 )
 
 RegisterNUICallback(
@@ -291,16 +361,26 @@ function getInventoryWeight(inventory)
   return weight
 end
 
+local itemList = {sandwich}
+
+function allowedItem(itemName)
+    for k, v in ipairs(itemList) do
+        if v == itemName then
+            return true
+        end
+    end
+    return false
+end
+
 function loadPlayerInventory()
     ESX.TriggerServerCallback(
         "esx_inventoryhud:getPlayerInventory",
         function(data)
             items = {}
-            fastItems = {}
+            fastWeapons = {}
             inventory = data.inventory
             accounts = data.accounts
             money = data.money
-            weapons = data.weapons
 
             if Config.IncludeCash and money ~= nil and money > 0 then
                 for key, value in pairs(accounts) do
@@ -340,7 +420,7 @@ function loadPlayerInventory()
                     end
                 end
             end
-			
+
             if inventory ~= nil then
                 for key, value in pairs(inventory) do
                     if inventory[key].count <= 0 then
@@ -348,57 +428,91 @@ function loadPlayerInventory()
                     else
                         inventory[key].type = "item_standard"
                         table.insert(items, inventory[key])
-						--widgetTotal = getInventoryWeight(items)
+                        --widgetTotal = getInventoryWeight(items)
                     end
                 end
             end
 
-            if Config.IncludeWeapons and weapons ~= nil then
+            --[[if fastWeapons ~= nil then
+                for k, v in pairs(items) do
+                    for k, v in pairs(fastWeapons) do
+                        if fastWeapons[k].count <= 0 then
+                            fastWeapons[k] = nil
+                        elseif fastWeapons[k].name == items[k].name then
+                            table.insert(fastItems, {
+                                label = items[k].label,
+                                count = items[k].count,
+                                limit = -1,
+                                type = items[k].type,
+                                name = items[k].name,
+                                usable = false,
+                                rare = false,
+                                canRemove = true,
+                                slot = k
+                            })
+                            break
+                        end
+                    end
+                end
+                print("Slots Loaded")
+            end]]
+            print("Inventory Loaded")
+
+        --[[else
+            inventory[key].type = "item_standard"
+            inventory[key].usable = false
+            inventory[key].rare = false
+            inventory[key].limit = -1
+            inventory[key].canRemove = false
+            table.insert(items, inventory[key])
+        end]]
+
+            --[[if Config.IncludeWeapons and weapons ~= nil then
                 for key, value in pairs(weapons) do
                     local weaponHash = GetHashKey(weapons[key].name)
                     local playerPed = PlayerPedId()
                     if HasPedGotWeapon(playerPed, weaponHash, false) and weapons[key].name ~= "WEAPON_UNARMED" then
-							local found = false
-							for slot, weapon in pairs(fastWeapons) do
-								if weapon == weapons[key].name then
-									local ammo = GetAmmoInPedWeapon(playerPed, weaponHash)
-									table.insert(
-										fastItems,
-										{
-											label = weapons[key].label,
-											count = ammo,
-											limit = -1,
-											type = "item_weapon",
-											name = weapons[key].name,
-											usable = false,
-											rare = false,
-											canRemove = true,
-											slot = slot
-										}
-									)
-									found = true
-									break
-								end
-							end
-							if found == false then
-								local ammo = GetAmmoInPedWeapon(playerPed, weaponHash)
-								table.insert(
-									items,
-									{
-										label = weapons[key].label,
-										count = ammo,
-										limit = -1,
-										type = "item_weapon",
-										name = weapons[key].name,
-										usable = false,
-										rare = false,
-										canRemove = true
-									}
-								)
-							end
+                        local found = false
+                        for slot, weapon in pairs(fastWeapons) do
+                            if weapon == weapons[key].name then
+                                local ammo = GetAmmoInPedWeapon(playerPed, weaponHash)
+                                table.insert(
+                                    fastItems,
+                                    {
+                                        label = weapons[key].label,
+                                        count = ammo,
+                                        limit = -1,
+                                        type = "item_weapon",
+                                        name = weapons[key].name,
+                                        usable = false,
+                                        rare = false,
+                                        canRemove = true,
+                                        slot = slot
+                                    }
+                                )
+                                found = true
+                                break
+                            end
+                        end
+                        if found == false then
+                            local ammo = GetAmmoInPedWeapon(playerPed, weaponHash)
+                            table.insert(
+                                items,
+                                {
+                                    label = weapons[key].label,
+                                    count = ammo,
+                                    limit = -1,
+                                    type = "item_weapon",
+                                    name = weapons[key].name,
+                                    usable = false,
+                                    rare = false,
+                                    canRemove = true
+                                }
+                            )
+                        end
                     end
                 end
-            end
+            end]]
 			
 			local arrayWeight = Config.localWeight
 			local weight = 0
@@ -421,13 +535,7 @@ function loadPlayerInventory()
 			local texts =  _U("player_info", GetPlayerName(PlayerId()), (weight / 1000), (Config.Limit / 1000))
 			
             if weight > Config.Limit then
-                exports['mythic_notify']:SendAlert('error', 'Inventário Cheio! Não Consegues Andar')
-				--[[TriggerEvent("pNotify:SendNotification",  {
-					text =  'Inventário Cheio! Não Consegues Andar',
-					type = "error",
-					timeout = 2000,
-					layout = "centerLeft"
-                })--]] --Uncomment this to Use pNotify
+                exports['mythic_notify']:SendAlert('error', 'Inventory full! Unable to walk.')
 			   setHurt()
 			   
 			   texts = _U("player_info_full", GetPlayerName(PlayerId()), (weight / 1000), (Config.Limit / 1000))
@@ -457,6 +565,13 @@ end
 function setNotHurt()
 	 FreezeEntityPosition(GetPlayerPed(-1), false)
 end
+
+RegisterCommand('printtable', function(source, args, raw)
+    for k, v in pairs(fastWeapons) do
+        local debug = string.format('Slot: %s - Item: %s', k, v.label)
+        print(debug)
+    end
+end, false)
 
 RegisterNetEvent("esx_inventoryhud:openTrunkInventory")
 AddEventHandler(
@@ -621,25 +736,27 @@ Citizen.CreateThread(
 )
 
 -- HIDE WEAPON WHEEL
-Citizen.CreateThread(function ()
+--[[Citizen.CreateThread(function ()
 	Citizen.Wait(2000)
 	while true do
 		Citizen.Wait(0)
 		HideHudComponentThisFrame(19)
 		HideHudComponentThisFrame(20)
-		BlockWeaponWheelThisFrame()
-		DisableControlAction(0,Keys["TAB"],true)
+        BlockWeaponWheelThisFrame()
+        HudWeaponWheelIgnoreSelection()
+		--DisableControlAction(0,Keys["TAB"],true)
 	end
-end)
+end)]]
+
 --FAST ITEMS
-RegisterNUICallback(
+--[[RegisterNUICallback(
     "PutIntoFast",
     function(data, cb)
 		if data.item.slot ~= nil then
 			fastWeapons[data.item.slot] = nil
 		end
 		fastWeapons[data.slot] = data.item.name
-		TriggerServerEvent("esx_inventoryhud:changeFastItem",data.slot,data.item.name)
+		--TriggerServerEvent("esx_inventoryhud:changeFastItem",data.slot,data.item.name)
 		loadPlayerInventory()
 		cb("ok")
 	end
@@ -648,12 +765,39 @@ RegisterNUICallback(
     "TakeFromFast",
     function(data, cb)
 		fastWeapons[data.item.slot] = nil
-		TriggerServerEvent("esx_inventoryhud:changeFastItem",0,data.item.name)
+		--TriggerServerEvent("esx_inventoryhud:changeFastItem",0,data.item.name)
+		loadPlayerInventory()
+		cb("ok")
+	end
+)]]
+
+RegisterNUICallback(
+    "PutIntoFast",
+    function(data, cb)
+		if data.item.slot ~= nil then
+			fastWeapons[data.item.slot] = nil
+		end
+		fastWeapons[data.slot] = data.item.name
+        --TriggerServerEvent("esx_inventoryhud:changeFastItem",data.slot,data.item.name)
+        print("Put into slot")
+        loadPlayerInventory()
+        cb("ok")
+
+	end
+)
+
+RegisterNUICallback(
+    "TakeFromFast",
+    function(data, cb)
+		fastWeapons[data.item.slot] = nil
+        --TriggerServerEvent("esx_inventoryhud:changeFastItem",0,data.item.name)
+        print("Removed from slot")
 		loadPlayerInventory()
 		cb("ok")
 	end
 )
-Citizen.CreateThread(
+
+--[[Citizen.CreateThread(
     function()
 		while true do
             Citizen.Wait(0)
@@ -704,7 +848,7 @@ Citizen.CreateThread(
             end
         end
     end
-)
+)]]
 
 
 --Add Items--
@@ -714,3 +858,162 @@ AddEventHandler('esx_inventoryhud:client:addItem', function(itemname, itemlabel)
     local data = { name = itemname, label = itemlabel }
     SendNUIMessage({type = "addInventoryItem", addItemData = data})
 end)
+
+---------------------------
+-- Scrubz Weapon Stuffs --
+---------------------------
+local weaponInfo = 
+{
+    [1] = {id = 'advancedrifle', hash = "WEAPON_ADVANCEDRIFLE"},
+    [2] = {id = 'appistol', hash = "WEAPON_APPISTOL"},
+    [3] = {id = 'assaultrifle', hash = "WEAPON_ASSAULTRIFLE"},
+    [4] = {id = 'wrench', hash = "WEAPON_WRENCH"},
+    [5] = {id = 'assaulshotgun', hash = "WEAPON_ASSAULTSHOTGUN"},
+    [6] = {id = 'assualtsmg', hash = "WEAPON_ASSAULTSMG"},
+    [7] = {id = 'ball', hash = "WEAPON_BALL"},
+    [8] = {id = 'bat', hash = "WEAPON_BAT"},
+    [9] = {id = 'battleaxe', hash = "WEAPON_BATTLEAXE"},
+    [10] = {id = 'bottle', hash = "WEAPON_BOTTLE"},
+    [11] = {id = 'bullpuprifle', hash = "WEAPON_BULLPUPRIFLE"},
+    [12] = {id = 'bzgas', hash = "WEAPON_BZGAS"},
+    [13] = {id = 'carbinerifle', hash = "WEAPON_CARBINERIFLE"},
+    [14] = {id = 'combatmg', hash = "WEAPON_COMBATMG"},
+    [15] = {id = 'combatpdw', hash = "WEAPON_COMBATPDW"},
+    [16] = {id = 'combatpistol', hash = "WEAPON_COMBATPISTOL"},
+    [17] = {id = 'compactrifle', hash = "WEAPON_COMPACTRIFLE"},
+    [18] = {id = 'crowbar', hash = "WEAPON_CROWBAR"},
+    [19] = {id = 'dagger', hash = "WEAPON_DAGGER"},
+    [20] = {id = 'dbshotgun', hash = "WEAPON_DBSHOTGUN"},
+    [21] = {id = 'digiscanner', hash = "WEAPON_DIGISCANNER"},
+    [22] = {id = 'doubleaction', hash = "WEAPON_DOUBLEACTION"},
+    [23] = {id = 'fireextinguisher', hash = "WEAPON_FIREEXTINGUISHER"},
+    [24] = {id = 'flare', hash = "WEAPON_FLARE"},
+    [25] = {id = 'flaregun', hash = "WEAPON_FLAREGUN"},
+    [26] = {id = 'flashlight', hash = "WEAPON_FLASHLIGHT"},
+    [27] = {id = 'golfclub', hash = "WEAPON_GOLFCLUB"},
+    [28] = {id = 'grenade', hash = "WEAPON_GRENADE"},
+    [29] = {id = 'gusenberg', hash = "WEAPON_GUSENBERG"},
+    [30] = {id = 'hammer', hash = "WEAPON_HAMMER"},
+    [31] = {id = 'handcuffs', hash = "WEAPON_HANDCUFFS"},
+    [32] = {id = 'hatchet', hash = "WEAPON_HATCHET"},
+    [33] = {id = 'heavypistol', hash = "WEAPON_HEAVYPISTOL"},
+    [34] = {id = 'heavyshotgun', hash = "WEAPON_HEAVYSHOTGUN"},
+    [35] = {id = 'knife', hash = "WEAPON_HEAVYSNIPER"},
+    [36] = {id = 'knuckle', hash = "WEAPON_KNIFE"},
+    [37] = {id = 'knuckle', hash = "WEAPON_KNUCKLE"},
+    [38] = {id = 'machete', hash = "WEAPON_MACHETE"},
+    [39] = {id = 'machinepistol', hash = "WEAPON_MACHINEPISTOL"},
+    [40] = {id = 'marksmanpistol', hash = "WEAPON_MARKSMANPISTOL"},
+    [41] = {id = 'marksmanrifle', hash = "WEAPON_MARKSMANRIFLE"},
+    [42] = {id = 'microsmg', hash = "WEAPON_MICROSMG"},
+    [43] = {id = 'minismg', hash = "WEAPON_MINISMG"},
+    [44] = {id = 'molotov', hash = "WEAPON_MOLOTOV"},
+    [45] = {id = 'musket', hash = "WEAPON_MUSKET"},
+    [46] = {id = 'nightstick', hash = "WEAPON_NIGHTSTICK"},
+    [47] = {id = 'parachute', hash = "GADGET_PARACHUTE"},
+    [48] = {id = 'petrolcan', hash = "WEAPON_PETROLCAN"},
+    [49] = {id = 'pistol', hash = "WEAPON_PISTOL"},
+    [50] = {id = 'pistol50', hash = "WEAPON_PISTOL50"},
+    [51] = {id = 'pistol_mk2', hash = "WEAPON_PISTOL_MK2"},
+    [52] = {id = 'poolcue', hash = "WEAPON_POOLCUE"},
+    [53] = {id = 'pumpshotgun', hash = "WEAPON_PUMPSHOTGUN"},
+    [54] = {id = 'revolver', hash = "WEAPON_REVOLVER"},
+    [55] = {id = 'rpg', hash = "WEAPON_RPG"},
+    [56] = {id = 'sawnoffshotgun', hash = "WEAPON_SAWNOFFSHOTGUN"},
+    [57] = {id = 'smg', hash = "WEAPON_SMG"},
+    [58] = {id = 'smokegrenade', hash = "WEAPON_SMOKEGRENADE"},
+    [59] = {id = 'sniperrifle', hash = "WEAPON_SNIPERRIFLE"},
+    [60] = {id = 'snowball', hash = "WEAPON_SNOWBALL"},
+    [61] = {id = 'snspistol', hash = "WEAPON_SNSPISTOL"},
+    [62] = {id = 'snspistol_mk2', hash = "WEAPON_SNSPISTOL_MK2"},
+    [63] = {id = 'stungun', hash = "WEAPON_STUNGUN"},
+    [64] = {id = 'switchblade', hash = "WEAPON_SWITCHBLADE"},
+    [65] = {id = 'vintagepistol', hash = "WEAPON_VINTAGEPISTOL"}
+}
+
+-- Checking if weapon is equipped and removing from the wheel if it is.
+RegisterNetEvent('esx:removeInventoryItem')
+AddEventHandler('esx:removeInventoryItem', function(name, count)
+    local plyPed = GetPlayerPed(-1)
+    for k, v in pairs(weaponInfo) do
+        if v.id == name then
+            if HasPedGotWeapon(plyPed, v.hash, false) then
+                SetPedAmmo(plyPed, GetHashKey(v.hash), 0)
+                Citizen.Wait(5)
+                RemoveWeaponFromPed(plyPed, GetHashKey(v.hash))
+                print("Weapon removed from wheel")
+            else
+                print("Weapon not equipped")
+            end
+        end
+    end
+end)
+
+-- Printing the weapons group hash.
+RegisterCommand('printweapon', function(source, args, raw)
+    local plyPed = GetPlayerPed(-1)
+    local currentWeapon = GetSelectedPedWeapon(plyPed)
+    local weaponType = GetWeapontypeGroup(GetHashKey(currentWeapon))
+    print(weaponType)
+end, false)
+
+-- Adding ammo. Will need to trigger this when using an item to give ammo. //Ammo Box//
+RegisterNetEvent('scrubz_weaponsystem_cl:addAmmo')
+AddEventHandler('scrubz_weaponsystem_cl:addAmmo', function(item, amount)
+    local plyPed = GetPlayerPed(-1)
+    local currentWeapon = GetSelectedPedWeapon(plyPed)
+    local weaponType = GetWeapontypeGroup(GetHashKey(currentWeapon))
+    if item == "ammopistol" then
+        if weaponType == 416676503 then  -- Pistol
+            SetPedAmmo(plyPed, currentWeapon, amount)
+            exports['mythic_notify']:SendAlert('success', "Added rounds to your pistol.")
+        elseif weaponType == -957766203 or weaponType == 1159398588 or weaponType == 860033945 or weaponType == 970310034 then
+            exports['mythic_notify']:SendAlert('error', "A pistol is not equipped.")
+        elseif weaponType == -1609580060 then  -- Unarmed
+            exports['mythic_notify']:SendAlert('error', "You just gonna throw the ammo at people??")
+        end
+    elseif item == "ammosmg" then
+        if weaponType == -957766203 or weaponType == 1159398588 then  -- SMG
+            SetPedAmmo(plyPed, currentWeapon, amount)
+            exports['mythic_notify']:SendAlert('success', "Added 30 rounds to your SMG.")
+        elseif weaponType == -1609580060 then  -- Unarmed
+            exports['mythic_notify']:SendAlert('error', "You just gonna throw the ammo at people??")
+        elseif weaponType == 416676503 or weaponType == 860033945 or weaponType == 970310034 then
+            exports['mythic_notify']:SendAlert('error', "A smg is not equipped.")
+        end
+    elseif item == "ammoshotgun" then
+        if weaponType == 860033945 then  -- Shotgun
+            SetPedAmmo(plyPed, currentWeapon, amount)
+            exports['mythic_notify']:SendAlert('success', "Added 30 rounds to your shotgun.")
+        elseif weaponType == -1609580060 then  -- Unarmed
+            exports['mythic_notify']:SendAlert('error', "You just gonna throw the ammo at people??")
+        elseif weaponType == 416676503 or weaponType == -957766203 or weaponType == 1159398588 or weaponType == 970310034 then
+            exports['mythic_notify']:SendAlert('error', "A shotgun is not equipped.")
+        end
+    elseif item == "ammorifle" then  -- Rifle
+        if weaponType == 970310034 then
+            SetPedAmmo(plyPed, currentWeapon, amount)
+            exports['mythic_notify']:SendAlert('success', "Added 30 rounds to your rifle.")
+        elseif weaponType == -1609580060 then  -- Unarmed
+            exports['mythic_notify']:SendAlert('error', "You just gonna throw the ammo at people??")
+        elseif weaponType == 416676503 or weaponType == -957766203 or weaponType == 1159398588 or weaponType == 860033945 then
+            exports['mythic_notify']:SendAlert('error', "A rifle is not equipped.")
+        end
+    end
+end)
+
+-- Adding a weapon to the wheel
+RegisterNetEvent('scrubz_weaponsystem_cl:addWeapon')
+AddEventHandler('scrubz_weaponsystem_cl:addWeapon', function(weapon)
+    local plyPed = GetPlayerPed(-1)
+    for k, v in pairs(weaponInfo) do
+        if weapon == v.id then
+            if not HasPedGotWeapon(plyPed, GetHashKey(v.hash), false) then
+                GiveWeaponToPed(plyPed, GetHashKey(v.hash), 0, false, false)
+            else
+                exports['mythic_notify']:SendAlert('error', 'You already have that weapon equipped!')
+            end
+        end
+    end
+end)
+

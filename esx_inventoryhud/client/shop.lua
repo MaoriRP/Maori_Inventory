@@ -21,7 +21,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         player = GetPlayerPed(-1)
         coords = GetEntityCoords(player)
-        if IsInRegularShopZone(coords) or IsInRobsLiquorZone(coords) or IsInYouToolZone(coords) or IsInPrisonShopZone(coords) or IsInWeaponShopZone(coords) then
+        if IsInRegularShopZone(coords) or IsInRobsLiquorZone(coords) or IsInYouToolZone(coords) or IsInPrisonShopZone(coords) or IsInWeaponShopZone(coords) or IsInLTDgasolineZone(coords) or IsInMegaMallZone(coords) or IsInBahamaMamaZone(coords) or IsInVendingZone(coords) then
             if IsInRegularShopZone(coords) then
                 if IsControlJustReleased(0, Keys["E"]) then
                     OpenShopInv("regular")
@@ -59,6 +59,30 @@ Citizen.CreateThread(function()
                     else
                         exports['mythic_notify']:SendAlert('error', 'You need a Fire Arms license before you can buy weapons')
                     end
+                end
+            end
+            if IsInLTDgasolineZone(coords) then
+                if IsControlJustReleased(0, Keys["E"]) then
+                    OpenShopInv("ltdgasoline")
+                    Citizen.Wait(2000)
+                end
+            end
+            if IsInMegaMallZone(coords) then
+                if IsControlJustReleased(0, Keys["E"]) then
+                    OpenShopInv("megamall")
+                    Citizen.Wait(2000)
+                end
+            end
+            if IsInBahamaMamaZone(coords) then
+                if IsControlJustReleased(0, Keys["E"]) then
+                    OpenShopInv("bahamamama")
+                    Citizen.Wait(2000)
+                end
+            end
+            if IsInVendingZone(coords) then
+                if IsControlJustReleased(0, Keys["E"]) then
+                    OpenShopInv("vending")
+                    Citizen.Wait(2000)
                 end
             end
         end
@@ -207,6 +231,46 @@ function IsInWeaponShopZone(coords)
     return false
 end
 
+function IsInLTDgasolineZone(coords)
+    LTDgasoline = Config.Shops.LTDgasoline.Locations
+    for i = 1, #LTDgasoline, 1 do
+        if GetDistanceBetweenCoords(coords, LTDgasoline[i].x, LTDgasoline[i].y, LTDgasoline[i].z, true) < 1.5 then
+            return true
+        end
+    end
+    return false
+end
+
+function IsInMegaMallZone(coords)
+    MegaMall = Config.Shops.MegaMall.Locations
+    for i = 1, #MegaMall, 1 do
+        if GetDistanceBetweenCoords(coords, MegaMall[i].x, MegaMall[i].y, MegaMall[i].z, true) < 1.5 then
+            return true
+        end
+    end
+    return false
+end
+
+function IsInBahamaMamaZone(coords)
+    BahamaMama = Config.Shops.BahamaMama.Locations
+    for i = 1, #BahamaMama, 1 do
+        if GetDistanceBetweenCoords(coords, BahamaMama[i].x, BahamaMama[i].y, BahamaMama[i].z, true) < 1.5 then
+            return true
+        end
+    end
+    return false
+end
+
+function IsInVendingZone(coords)
+    Vending = Config.Shops.Vending.Locations
+    for i = 1, #Vending, 1 do
+        if GetDistanceBetweenCoords(coords, Vending[i].x, Vending[i].y, Vending[i].z, true) < 1.5 then
+            return true
+        end
+    end
+    return false
+end
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -278,6 +342,18 @@ Citizen.CreateThread(function()
         CreateBlip(vector3(Config.Shops.WeaponShop.Locations[k].x, Config.Shops.WeaponShop.Locations[k].y, Config.Shops.WeaponShop.Locations[k].z), "Ammunation", 3.0, Config.WeaponColor, Config.WeaponShopBlipID)
     end
 
+    for k, v in pairs(Config.Shops.LTDgasoline.Locations) do
+        CreateBlip(vector3(Config.Shops.LTDgasoline.Locations[k].x, Config.Shops.LTDgasoline.Locations[k].y, Config.Shops.LTDgasoline.Locations[k].z), "LTD Gasoline", 3.0, Config.Color, Config.ShopBlipID)
+    end
+
+    for k, v in pairs(Config.Shops.MegaMall.Locations) do
+        CreateBlip(vector3(Config.Shops.MegaMall.Locations[k].x, Config.Shops.MegaMall.Locations[k].y, Config.Shops.MegaMall.Locations[k].z ), "MegaMall", 3.0, Config.Color1, Config.MegaMallBlipID)
+    end
+
+    for k, v in pairs(Config.Shops.BahamaMama.Locations) do
+        CreateBlip(vector3(Config.Shops.BahamaMama.Locations[k].x, Config.Shops.BahamaMama.Locations[k].y, Config.Shops.BahamaMama.Locations[k].z ), "BahamaMama", 3.0, Config.Color1, Config.LiquorBlipID)
+    end
+    
     CreateBlip(vector3(-755.79, 5596.07, 41.67), "Cablecart", 3.0, 4, 36)
 end)
 
@@ -314,6 +390,30 @@ Citizen.CreateThread(function()
         for k, v in pairs(Config.Shops.WeaponShop.Locations) do
             if GetDistanceBetweenCoords(coords, Config.Shops.WeaponShop.Locations[k].x, Config.Shops.WeaponShop.Locations[k].y, Config.Shops.WeaponShop.Locations[k].z, true) < 3.0 then
                 ESX.Game.Utils.DrawText3D(vector3(Config.Shops.WeaponShop.Locations[k].x, Config.Shops.WeaponShop.Locations[k].y, Config.Shops.WeaponShop.Locations[k].z + 1.0), "Press ~r~[E]~s~ to open shop", 0.6)
+            end
+        end
+
+        for k, v in pairs(Config.Shops.LTDgasoline.Locations) do
+            if GetDistanceBetweenCoords(coords, Config.Shops.LTDgasoline.Locations[k].x, Config.Shops.LTDgasoline.Locations[k].y, Config.Shops.LTDgasoline.Locations[k].z, true) < 3.0 then
+                ESX.Game.Utils.DrawText3D(vector3(Config.Shops.LTDgasoline.Locations[k].x, Config.Shops.LTDgasoline.Locations[k].y, Config.Shops.LTDgasoline.Locations[k].z), "Press ~r~[E]~w~ to open shop", 0.6)
+            end
+        end
+
+        for k, v in pairs(Config.Shops.MegaMall.Locations) do
+            if GetDistanceBetweenCoords(coords, Config.Shops.MegaMall.Locations[k].x, Config.Shops.MegaMall.Locations[k].y, Config.Shops.MegaMall.Locations[k].z, true) < 3.0 then
+                ESX.Game.Utils.DrawText3D(vector3(Config.Shops.MegaMall.Locations[k].x, Config.Shops.MegaMall.Locations[k].y, Config.Shops.MegaMall.Locations[k].z + 1.0), "Press ~r~[E]~w~ to open shop", 0.6)
+            end
+        end
+
+        for k, v in pairs(Config.Shops.BahamaMama.Locations) do
+            if GetDistanceBetweenCoords(coords, Config.Shops.BahamaMama.Locations[k].x, Config.Shops.BahamaMama.Locations[k].y, Config.Shops.BahamaMama.Locations[k].z, true) < 3.0 then
+                ESX.Game.Utils.DrawText3D(vector3(Config.Shops.BahamaMama.Locations[k].x, Config.Shops.BahamaMama.Locations[k].y, Config.Shops.BahamaMama.Locations[k].z + 1.0), "Press ~r~[E]~w~ to open shop", 0.6)
+            end
+        end
+
+        for k, v in pairs(Config.Shops.Vending.Locations) do
+            if GetDistanceBetweenCoords(coords, Config.Shops.Vending.Locations[k].x, Config.Shops.Vending.Locations[k].y, Config.Shops.Vending.Locations[k].z, true) < 3.0 then
+                ESX.Game.Utils.DrawText3D(vector3(Config.Shops.Vending.Locations[k].x, Config.Shops.Vending.Locations[k].y, Config.Shops.Vending.Locations[k].z), "Press ~r~[E]~w~ to open shop", 0.6)
             end
         end
     end

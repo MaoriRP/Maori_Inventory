@@ -41,7 +41,7 @@
     overflow-y: scroll;
 }
 
-#playerInventoryFastItems {
+/*#playerInventoryFastItems {
     width: 650px;
     height: 50px;
 	position : absolute;
@@ -49,7 +49,7 @@
 	left: 0%;
 	z-index: 100;
 	float:left;
-}
+}*/
 
 #controls {
     width: 100px;
@@ -92,7 +92,7 @@ input[type=number] {
     float: left;
     width: 117px;
     height: 117px;
-    bottom : -21.4%;
+    /*bottom : -21.4%;*/
     background-color: rgba(0, 0, 0, 0.6);
     margin: 2px;
     position: relative;
@@ -112,7 +112,7 @@ input[type=number] {
     background-color: rgba(110, 110, 110, 0.5);
 }
 
-.slotFast {
+/*.slotFast {
     float: left;
     width: 117px;
     height: 117px;
@@ -123,7 +123,7 @@ input[type=number] {
 
 .slotFast:hover {
     opacity: 0.8;
-}
+}*/
 
 .item,
 .item-other {
