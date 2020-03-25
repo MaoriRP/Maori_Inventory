@@ -13,40 +13,24 @@ local Keys = {
 local trunkData = nil
 local isInInventory = false
 ESX = nil
-local fastWeapons = {
-	[1] = nil,
-	[2] = nil,
-    [3] = nil,
-    [4] = nil,
-    [5] = nil
-}
 
-Citizen.CreateThread(
-    function()
-        while ESX == nil do
-            TriggerEvent(
-                "esx:getSharedObject",
-                function(obj)
-                    ESX = obj
-                end
-            )
-            Citizen.Wait(0)
+Citizen.CreateThread(function()
+    while ESX == nil do
+      TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+      Citizen.Wait(250)
+    end
+end)
+
+Citizen.CreateThread(function ()
+    while true do
+        Citizen.Wait(0)
+        if IsControlJustReleased(0, Config.OpenControl) and IsInputDisabled(0) then
+	    TriggerScreenblurFadeIn(0)
+            Citizen.Wait(100)
+            openInventory()
         end
     end
-)
-
-Citizen.CreateThread(
-    function()
-        while true do
-            Citizen.Wait(0)
-            if IsControlJustReleased(0, Config.OpenControl) and IsInputDisabled(0) then
-                TriggerScreenblurFadeIn(0)
-                Citizen.Wait(50)
-                openInventory()
-            end
-        end
-    end
-)
+end)
 
 function openInventory()
     loadPlayerInventory()
