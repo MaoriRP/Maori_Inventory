@@ -2,7 +2,7 @@
  
 Custom Version of esx_inventoryhud done for MaoriRP
 
-[Video] - (https://streamable.com/xeq6j)
+[Video] - (https://streamable.com/dwgaa)
 
 Features:
 -Glovebox
@@ -11,4 +11,4 @@ Features:
 -Stealing
 -Shops
 
-Ty to @Valvur_#9802 and @yedo#7074 for helping me out in this project
+Ty to Scrubz#0001 for helping me out in this project
