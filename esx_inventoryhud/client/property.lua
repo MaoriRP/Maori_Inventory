@@ -1,35 +1,63 @@
-RegisterNetEvent("esx_inventoryhud:openPropertyInventory")
-AddEventHandler("esx_inventoryhud:openPropertyInventory", function(data)
+local propertyData, propertyName
+
+RegisterNetEvent("esx_inventoryhud:openDiscPropertyInventory")
+AddEventHandler("esx_inventoryhud:openDiscPropertyInventory", function(data)
+	propertyName = data.inventory_name
+	setDiscPropertyInventoryData(data)
+	openDiscPropertyInventory()
 	TriggerScreenblurFadeIn(0)
-	setPropertyInventoryData(data)
-	openPropertyInventory()
 	if not IsEntityPlayingAnim(playerPed, 'mini@repair', 'fixing_a_player', 3) then
 		ESX.Streaming.RequestAnimDict('mini@repair', function()
-		TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
+			TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
 		end)
-	end
+    end
 end)
 
-function refreshPropertyInventory()
-    ESX.TriggerServerCallback("esx_property:getPropertyInventory", function(inventory)
-		setPropertyInventoryData(inventory)
-        end, ESX.GetPlayerData().identifier
+RegisterNetEvent("esx_inventoryhud:refreshDiscPropertyInventory")
+AddEventHandler("esx_inventoryhud:refreshDiscPropertyInventory", function()
+    refreshDiscPropertyInventory()
+    Citizen.Wait(200)
+    loadPlayerInventory()
+end)
+
+function refreshDiscPropertyInventory()
+    ESX.TriggerServerCallback("disc-property:getPropertyInventoryFor", function(data)
+		setDiscPropertyInventoryData(data)
+    end, propertyName
     )
 end
 
-function setPropertyInventoryData(data)
+function setDiscPropertyInventoryData(data)
+    propertyData = data
     items = {}
 
-    local blackMoney = data.blackMoney
-    local propertyItems = data.items
-    local propertyWeapons = data.weapons
+    local accounts = data.item_account or {}
+    local moneys = data.item_money or {}
+    local propertyItems = data.item_standard or {}
+    local propertyWeapons = data.item_weapon or {}
 
-    if blackMoney > 0 then
+    for i = 1, #accounts, 1 do
+        local account = accounts[i]
         accountData = {
-            label = _U("black_money"),
-            count = blackMoney,
+            label = _U(account.name),
+            count = account.count,
             type = "item_account",
-            name = "black_money",
+            name = account.name,
+            usable = false,
+            rare = false,
+            limit = -1,
+            canRemove = false
+        }
+        table.insert(items, accountData)
+    end
+
+    for i = 1, #moneys, 1 do
+        local money = moneys[i]
+        accountData = {
+            label = _U(money.name),
+            count = money.count,
+            type = "item_money",
+            name = money.name,
             usable = false,
             rare = false,
             limit = -1,
@@ -42,6 +70,7 @@ function setPropertyInventoryData(data)
         local item = propertyItems[i]
 
         if item.count > 0 then
+            item.label = item.name
             item.type = "item_standard"
             item.usable = false
             item.rare = false
@@ -57,68 +86,55 @@ function setPropertyInventoryData(data)
 
         if propertyWeapons[i].name ~= "WEAPON_UNARMED" then
             table.insert(
-                items,
-                {
-                    label = ESX.GetWeaponLabel(weapon.name),
-                    count = weapon.ammo,
-                    limit = -1,
-                    type = "item_weapon",
-                    name = weapon.name,
-                    usable = false,
-                    rare = false,
-                    canRemove = false
-              })
+                    items,
+                    {
+                        label = ESX.GetWeaponLabel(weapon.name),
+                        count = weapon.count,
+                        limit = -1,
+                        type = "item_weapon",
+                        name = weapon.name,
+                        usable = false,
+                        rare = false,
+                        canRemove = false
+                    }
+            )
         end
     end
 
     SendNUIMessage({action = "setSecondInventoryItems", itemList = items})
 end
 
-function openPropertyInventory()
+function openDiscPropertyInventory()
     loadPlayerInventory()
     isInInventory = true
 
-    SendNUIMessage({action = "display", type = "property"})
+    SendNUIMessage({action = "display", type = "disc-property"})
 
     SetNuiFocus(true, true)
 end
 
-RegisterNUICallback("PutIntoProperty", function(data, cb)
-	if IsPedSittingInAnyVehicle(playerPed) then
-		return
-	end
-
+RegisterNUICallback("PutIntoDiscProperty", function(data, cb)
 	if type(data.number) == "number" and math.floor(data.number) == data.number then
 		local count = tonumber(data.number)
 
-		if data.item.type == "item_weapon" then
-			count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
-		end
+	if data.item.type == "item_weapon" then
+		count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
+	end
 
-		TriggerServerEvent("esx_property:putItem", ESX.GetPlayerData().identifier, data.item.type, data.item.name, count)
-    end
-
-        Wait(250)
-        refreshPropertyInventory()
-        Wait(250)
-        loadPlayerInventory()
-
-        cb("ok")
+		TriggerServerEvent("disc-property:putItemInPropertyFor", propertyName, data.item, count)
+	end
+		cb("ok")
 end)
 
-RegisterNUICallback("TakeFromProperty", function(data, cb)
-	if IsPedSittingInAnyVehicle(playerPed) then
-		return
-	end
-
+RegisterNUICallback("TakeFromDiscProperty", function(data, cb)
 	if type(data.number) == "number" and math.floor(data.number) == data.number then
-		TriggerServerEvent("esx_property:getItem", ESX.GetPlayerData().identifier, data.item.type, data.item.name, tonumber(data.number))
+		local count = tonumber(data.number)
+
+	if data.item.type == "item_weapon" then
+		count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
 	end
 
-        Wait(250)
-        refreshPropertyInventory()
-        Wait(250)
-        loadPlayerInventory()
-
-        cb("ok")
+		TriggerServerEvent("disc-property:takeItemFromProperty", propertyName, data.item, count)
+	end
+		cb("ok")
 end)
