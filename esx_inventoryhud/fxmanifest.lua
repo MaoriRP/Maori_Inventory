@@ -1,4 +1,5 @@
 fx_version 'adamant'
+
 game 'gta5'
 
 description 'MaoriRP Inventory'
@@ -10,7 +11,7 @@ ui_page 'html/ui.html'
 client_scripts {
   '@es_extended/locale.lua',
   'client/main.lua',
-  'client/property.lua',
+  --'client/property.lua', --default property
   'client/shop.lua',
   'client/glovebox.lua',
   'locales/en.lua',
