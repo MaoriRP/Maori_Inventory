@@ -17,7 +17,6 @@ client_scripts {
   'locales/cs.lua',
   'locales/fr.lua',
   'locales/pt.lua',
-  'client/disc-property.lua',
   'client/player.lua',
   'client/steal.lua',
   'config.lua'
