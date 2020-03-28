@@ -1,19 +1,5 @@
-local shopData = nil
+local shopData
 ESX = nil
-
-
-Keys = {
-	["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57, 
-	["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177, 
-	["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
-	["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
-	["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
-	["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70, 
-	["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
-	["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
-	["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
-}
-
 local Licenses = {}
 
 Citizen.CreateThread(function()
@@ -23,35 +9,35 @@ Citizen.CreateThread(function()
         coords = GetEntityCoords(player)
         if IsInRegularShopZone(coords) or IsInRobsLiquorZone(coords) or IsInYouToolZone(coords) or IsInPrisonShopZone(coords) or IsInWeaponShopZone(coords) then
             if IsInRegularShopZone(coords) then
-                if IsControlJustReleased(0, Keys["E"]) then
+                if IsControlJustReleased(0, 38) then
                     OpenShopInv("regular")
                     TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInRobsLiquorZone(coords) then
-                if IsControlJustReleased(0, Keys["E"]) then
+                if IsControlJustReleased(0, 38) then
                     OpenShopInv("robsliquor")
                     TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInYouToolZone(coords) then
-                if IsControlJustReleased(0, Keys["E"]) then
+                if IsControlJustReleased(0, 38) then
                     OpenShopInv("youtool")
                     TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInPrisonShopZone(coords) then
-                if IsControlJustReleased(0, Keys["E"]) then
+                if IsControlJustReleased(0, 38) then
                     OpenShopInv("prison")
                     TriggerScreenblurFadeIn(0)
                     Citizen.Wait(2000)
                 end
             end
             if IsInWeaponShopZone(coords) then
-                if IsControlJustReleased(0, Keys["E"]) then
+                if IsControlJustReleased(0, 38) then
                     if Licenses['weapon'] ~= nil then
                         OpenShopInv("weaponshop")
                         TriggerScreenblurFadeIn(0)
@@ -98,59 +84,43 @@ end)
 
 RegisterNetEvent("esx_inventoryhud:openShopInventory")
 AddEventHandler("esx_inventoryhud:openShopInventory", function(data, inventory)
-        setShopInventoryData(data, inventory, weapons)
-        openShopInventory()
+	setShopInventoryData(data, inventory, weapons)
+	openShopInventory()
 end)
 
 function setShopInventoryData(data, inventory)
     shopData = data
 
-    SendNUIMessage(
-        {
-            action = "setInfoText",
-            text = data.text
-        }
-    )
+    SendNUIMessage({action = "setInfoText", text = data.text})
 
     items = {}
 
-    SendNUIMessage(
-        {
-            action = "setShopInventoryItems",
-            itemList = inventory
-        }
-    )
+    SendNUIMessage({action = "setShopInventoryItems", itemList = inventory})
 end
 
 function openShopInventory()
     loadPlayerInventory()
     isInInventory = true
 
-    SendNUIMessage(
-        {
-            action = "display",
-            type = "shop"
-        }
-    )
+    SendNUIMessage({action = "display", type = "shop"})
 
     SetNuiFocus(true, true)
 end
 
 RegisterNUICallback("TakeFromShop", function(data, cb)
-        if IsPedSittingInAnyVehicle(playerPed) then
-            return
-        end
+	if IsPedSittingInAnyVehicle(playerPed) then
+		return
+	end
 
-        if type(data.number) == "number" and math.floor(data.number) == data.number then
-            TriggerServerEvent("suku:SellItemToPlayer", GetPlayerServerId(PlayerId()), data.item.type, data.item.name, tonumber(data.number))
-        end
+	if type(data.number) == "number" and math.floor(data.number) == data.number then
+		TriggerServerEvent("suku:SellItemToPlayer", GetPlayerServerId(PlayerId()), data.item.type, data.item.name, tonumber(data.number))
+	end
 
         Wait(150)
         loadPlayerInventory()
 
         cb("ok")
-    end
-)
+    end)
 
 RegisterNetEvent("suku:AddAmmoToWeapon")
 AddEventHandler("suku:AddAmmoToWeapon", function(hash, amount)
@@ -216,7 +186,7 @@ Citizen.CreateThread(function()
         if GetDistanceBetweenCoords(coords, Config.WeaponLiscence.x, Config.WeaponLiscence.y, Config.WeaponLiscence.z, true) < 3.0 then
             ESX.Game.Utils.DrawText3D(vector3(Config.WeaponLiscence.x, Config.WeaponLiscence.y, Config.WeaponLiscence.z), "Press ~r~[E]~s~ to open shop", 0.6)
 
-            if IsControlJustReleased(0, Keys["E"]) then
+            if IsControlJustReleased(0, 38) then
                 if Licenses['weapon'] == nil then
                     OpenBuyLicenseMenu()
                 else
@@ -240,17 +210,14 @@ function OpenBuyLicenseMenu()
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'shop_license',{
         title = 'Register a License?',
         elements = {
-          { label = 'yes' ..' ($' .. Config.LicensePrice ..')', value = 'yes' },
-          { label = 'no', value = 'no' },
-        }
-      },
-      function (data, menu)
+          {label = 'yes' ..' ($' .. Config.LicensePrice ..')', value = 'yes'},
+          {label = 'no', value = 'no' },
+     }}, function (data, menu)
         if data.current.value == 'yes' then
             TriggerServerEvent('suku:buyLicense')
         end
         menu.close()
-    end,
-    function (data, menu)
+    end, function (data, menu)
         menu.close()
     end)
 end

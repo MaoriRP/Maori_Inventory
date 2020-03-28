@@ -1,21 +1,17 @@
-local propertyData
-local propertyName
+local propertyData, propertyName
 
 RegisterNetEvent("esx_inventoryhud:openDiscPropertyInventory")
-AddEventHandler(
-        "esx_inventoryhud:openDiscPropertyInventory",
-        function(data)
-            propertyName = data.inventory_name
-            setDiscPropertyInventoryData(data)
-            openDiscPropertyInventory()
-            TriggerScreenblurFadeIn(0)
-            if not IsEntityPlayingAnim(playerPed, 'mini@repair', 'fixing_a_player', 3) then
-                ESX.Streaming.RequestAnimDict('mini@repair', function()
-                    TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
-                end)
-            end
-        end
-)
+AddEventHandler("esx_inventoryhud:openDiscPropertyInventory", function(data)
+	propertyName = data.inventory_name
+	setDiscPropertyInventoryData(data)
+	openDiscPropertyInventory()
+	TriggerScreenblurFadeIn(0)
+	if not IsEntityPlayingAnim(playerPed, 'mini@repair', 'fixing_a_player', 3) then
+		ESX.Streaming.RequestAnimDict('mini@repair', function()
+			TaskPlayAnim(playerPed, 'mini@repair', 'fixing_a_player', 8.0, -8, -1, 49, 0, 0, 0, 0)
+		end)
+    end
+end)
 
 RegisterNetEvent("esx_inventoryhud:refreshDiscPropertyInventory")
 AddEventHandler("esx_inventoryhud:refreshDiscPropertyInventory", function()
@@ -25,12 +21,9 @@ AddEventHandler("esx_inventoryhud:refreshDiscPropertyInventory", function()
 end)
 
 function refreshDiscPropertyInventory()
-    ESX.TriggerServerCallback(
-            "disc-property:getPropertyInventoryFor",
-            function(data)
-                setDiscPropertyInventoryData(data)
-            end,
-            propertyName
+    ESX.TriggerServerCallback("disc-property:getPropertyInventoryFor", function(data)
+		setDiscPropertyInventoryData(data)
+    end, propertyName
     )
 end
 
@@ -108,56 +101,40 @@ function setDiscPropertyInventoryData(data)
         end
     end
 
-    SendNUIMessage(
-            {
-                action = "setSecondInventoryItems",
-                itemList = items
-            }
-    )
+    SendNUIMessage({action = "setSecondInventoryItems", itemList = items})
 end
 
 function openDiscPropertyInventory()
     loadPlayerInventory()
     isInInventory = true
 
-    SendNUIMessage(
-            {
-                action = "display",
-                type = "disc-property"
-            }
-    )
+    SendNUIMessage({action = "display", type = "disc-property"})
 
     SetNuiFocus(true, true)
 end
 
-RegisterNUICallback(
-        "PutIntoDiscProperty",
-        function(data, cb)
-            if type(data.number) == "number" and math.floor(data.number) == data.number then
-                local count = tonumber(data.number)
+RegisterNUICallback("PutIntoDiscProperty", function(data, cb)
+	if type(data.number) == "number" and math.floor(data.number) == data.number then
+		local count = tonumber(data.number)
 
-                if data.item.type == "item_weapon" then
-                    count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
-                end
+	if data.item.type == "item_weapon" then
+		count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
+	end
 
-                TriggerServerEvent("disc-property:putItemInPropertyFor", propertyName, data.item, count)
-            end
-            cb("ok")
-        end
-)
+		TriggerServerEvent("disc-property:putItemInPropertyFor", propertyName, data.item, count)
+	end
+		cb("ok")
+end)
 
-RegisterNUICallback(
-        "TakeFromDiscProperty",
-        function(data, cb)
-            if type(data.number) == "number" and math.floor(data.number) == data.number then
-                local count = tonumber(data.number)
+RegisterNUICallback("TakeFromDiscProperty", function(data, cb)
+	if type(data.number) == "number" and math.floor(data.number) == data.number then
+		local count = tonumber(data.number)
 
-                if data.item.type == "item_weapon" then
-                    count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
-                end
+	if data.item.type == "item_weapon" then
+		count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
+	end
 
-                TriggerServerEvent("disc-property:takeItemFromProperty", propertyName, data.item, count)
-            end
-            cb("ok")
-        end
-)
+		TriggerServerEvent("disc-property:takeItemFromProperty", propertyName, data.item, count)
+	end
+		cb("ok")
+end)
