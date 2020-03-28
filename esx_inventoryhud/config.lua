@@ -30,26 +30,25 @@ Config.LicensePrice = 5000
 Config.Shops = {
     RegularShop = {
         Locations = {
-			{x = 373.875,   y = 325.896,  z = 102.566},
-			{x = 2557.458,  y = 382.282,  z = 107.622},
-			{x = -3038.939, y = 585.954,  z = 6.908},
-			{x = -3241.927, y = 1001.462, z = 11.830},
-			{x = 547.431,   y = 2671.710, z = 41.156},
-			{x = 1961.464,  y = 3740.672, z = 31.343},
-			{x = 2678.916,  y = 3280.671, z = 54.241},
-            {x = 1729.216,  y = 6414.131, z = 34.037},
-            {x = -48.519,   y = -1757.514, z = 28.421},
-			{x = 1163.373,  y = -323.801,  z = 68.205},
-			{x = -707.501,  y = -914.260,  z = 18.215},
-			{x = -1820.523, y = 792.518,   z = 137.118},
-            {x = 1698.388,  y = 4924.404,  z = 41.063},
-            {x = 25.723,   y = -1346.966, z = 28.497}, 
+		{x = 373.875, y = 325.896, z = 102.566},
+		{x = 2557.458, y = 382.282, z = 107.622},
+		{x = -3038.939, y = 585.954, z = 6.908},
+		{x = -3241.927, y = 1001.462, z = 11.830},
+		{x = 547.431,   y = 2671.710, z = 41.156},
+		{x = 1961.464,  y = 3740.672, z = 31.343},
+		{x = 2678.916,  y = 3280.671, z = 54.241},
+		{x = 1729.216,  y = 6414.131, z = 34.037},
+		{x = -48.519,   y = -1757.514, z = 28.421},
+		{x = 1163.373,  y = -323.801,  z = 68.205},
+		{x = -707.501,  y = -914.260,  z = 18.215},
+		{x = -1820.523, y = 792.518,   z = 137.118},
+		{x = 1698.388,  y = 4924.404,  z = 41.063},
+		{x = 25.723,   y = -1346.966, z = 28.497}, 
         },
         Items = {
             {name = 'bread'},
             {name = 'water'}
-        }
-    },
+     }},
 
     RobsLiquor = {
 		Locations = {
@@ -68,8 +67,7 @@ Config.Shops = {
             {name = 'tequila'},
             {name = 'whisky'},
             {name = 'grand_cru'}
-        }
-	},
+    }},
 
     YouTool = {
         Locations = {
@@ -91,8 +89,7 @@ Config.Shops = {
             {name = 'highgradefert'},
             {name = 'plantpot'},
             {name = 'drugscales'}
-        }
-    },
+    }},
 
     PrisonShop = {
         Locations = {
@@ -105,8 +102,7 @@ Config.Shops = {
             {name = 'lighter'},
             {name = 'sandwich'},
             {name = 'chips'}
-        }
-    },
+    }},
 
     WeaponShop = {
         Locations = {
@@ -133,9 +129,7 @@ Config.Shops = {
             {name = "shotgun_shells", weaponhash = "WEAPON_PUMPSHOTGUN", ammo = 12}
         },
         Items = {
-
-        }
-    },
+        }},
 }
 
 -- Limit, unit can be whatever you want. Originally grams (as average people can hold 25kg)
