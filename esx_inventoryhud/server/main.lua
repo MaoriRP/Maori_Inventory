@@ -1,33 +1,23 @@
 ESX = nil
 
-TriggerEvent(
-	"esx:getSharedObject",
-	function(obj)
-		ESX = obj
-	end
-)
+TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
 
-ESX.RegisterServerCallback(
-	"esx_inventoryhud:getPlayerInventory",
-	function(source, cb, target)
-		local targetXPlayer = ESX.GetPlayerFromId(target)
+ESX.RegisterServerCallback("esx_inventoryhud:getPlayerInventory", function(source, cb, target)
+	local targetXPlayer = ESX.GetPlayerFromId(target)
 
-		if targetXPlayer ~= nil then
-			cb({inventory = targetXPlayer.inventory, money = targetXPlayer.getMoney(), accounts = targetXPlayer.accounts, weapons = targetXPlayer.loadout})
-		else
-			cb(nil)
-		end
+	if targetXPlayer ~= nil then
+		cb({inventory = targetXPlayer.inventory, money = targetXPlayer.getMoney(), accounts = targetXPlayer.accounts, weapons = targetXPlayer.loadout})
+	else
+		cb(nil)
 	end
-)
+end)
 
 RegisterServerEvent("esx_inventoryhud:tradePlayerItem")
 AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type, itemName, itemCount)
-		local _source = from
-
-		local sourceXPlayer = ESX.GetPlayerFromId(_source)
+		local sourceXPlayer = ESX.GetPlayerFromId(from)
 		local targetXPlayer = ESX.GetPlayerFromId(target)
 
-		     if type == "item_standard" then
+		 if type == "item_standard" then
             local sourceItem = sourceXPlayer.getInventoryItem(itemName)
             local targetItem = targetXPlayer.getInventoryItem(itemName)
 
@@ -55,8 +45,7 @@ AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type,
 				targetXPlayer.addWeapon(itemName, itemCount)
 			end
 		end
-	end
-)
+	end)
 
 RegisterCommand("openinventory", function(source, args, rawCommand)
 		if IsPlayerAceAllowed(source, "inventory.openinventory") then
@@ -73,8 +62,7 @@ RegisterCommand("openinventory", function(source, args, rawCommand)
 			TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("no_permissions") })
 			TriggerClientEvent("chatMessage", source, "^1" .. _U("no_permissions"))
 		end
-	end
-)
+	end)
 
 RegisterServerEvent("suku:sendShopItems")
 AddEventHandler("suku:sendShopItems", function(source, itemList)
