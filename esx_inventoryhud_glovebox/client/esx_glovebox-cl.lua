@@ -1,64 +1,39 @@
 ESX = nil
-local GUI = {}
-local PlayerData = {}
-local lastVehicle = nil
-local lastOpen = false
-GUI.Time = 0
-local vehiclePlate = {}
+local vehiclePlate, PlayerData = {}, {}
 local arrayWeight = Config.localWeight
-local CloseToVehicle = false
-local entityWorld = nil
-local globalplate = nil
+local CloseToVehicle, lastOpen = false, false
+local entityWorld, globalplate, lastVehicle
 local lastChecked = 0
 
-Citizen.CreateThread(
-  function()
+Citizen.CreateThread(function()
     while ESX == nil do
-      TriggerEvent(
-        "esx:getSharedObject",
-        function(obj)
-          ESX = obj
-        end
-      )
+      TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
       Citizen.Wait(0)
     end
-  end
-)
+end)
 
 RegisterNetEvent("esx:playerLoaded")
-AddEventHandler(
-  "esx:playerLoaded",
-  function(xPlayer)
+AddEventHandler("esx:playerLoaded", function(xPlayer)
     PlayerData = xPlayer
     TriggerServerEvent("esx_glovebox_inventory:getOwnedVehicle")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
-AddEventHandler(
-  "onResourceStart",
-  function()
+AddEventHandler("onResourceStart", function()
     PlayerData = xPlayer
     TriggerServerEvent("esx_glovebox_inventory:getOwnedVehicle")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
 RegisterNetEvent("esx:setJob")
-AddEventHandler(
-  "esx:setJob",
-  function(job)
+AddEventHandler("esx:setJob", function(job)
     PlayerData.job = job
-  end
-)
+end)
 
 RegisterNetEvent("esx_glovebox_inventory:setOwnedVehicle")
-AddEventHandler(
-  "esx_glovebox_inventory:setOwnedVehicle",
-  function(vehicle)
-    vehiclePlate = vehicle
-  end
-)
+AddEventHandler("esx_glovebox_inventory:setOwnedVehicle", function(vehicle)
+	vehiclePlate = vehicle
+end)
 
 function getItemyWeight(item)
   local weight = 0
@@ -130,7 +105,6 @@ function openmenuvehicle()
           exports['mythic_notify']:SendAlert('error', _U("no_veh_nearby"))
         end
         lastOpen = true
-        GUI.Time = GetGameTimer()
       end
     else
       -- Not their vehicle
@@ -138,6 +112,7 @@ function openmenuvehicle()
     end
   end
 end
+
 local count = 0
 
 -- Key controls
@@ -145,16 +120,13 @@ Citizen.CreateThread(
   function()
     while true do
       Wait(0)
-      if IsControlJustReleased(0, Config.OpenKey) and (GetGameTimer() - GUI.Time) > 1000 then
+      if IsControlJustReleased(0, Config.OpenKey) then
         openmenuvehicle()
-        GUI.Time = GetGameTimer()
       end
     end
-  end
-)
+end)
 
-Citizen.CreateThread(
-  function()
+Citizen.CreateThread(function()
     while true do
       Wait(0)
       local pos = GetEntityCoords(GetPlayerPed(-1))
@@ -170,23 +142,17 @@ Citizen.CreateThread(
         end
       end
     end
-  end
-)
+end)
 
 RegisterNetEvent("esx:playerLoaded")
-AddEventHandler(
-  "esx:playerLoaded",
-  function(xPlayer)
+AddEventHandler("esx:playerLoaded", function(xPlayer)
     PlayerData = xPlayer
     TriggerServerEvent("esx_glovebox_inventory:getOwnedVehicle")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
 function OpenCoffresInventoryMenu(plate, max, myVeh)
-  ESX.TriggerServerCallback(
-    "esx_glovebox:getInventoryV",
-    function(inventory)
+  ESX.TriggerServerCallback("esx_glovebox:getInventoryV", function(inventory)
       text = _U("glovebox_info", plate, (inventory.weight / 1000), (max / 1000))
       data = {plate = plate, max = max, myVeh = myVeh, text = text}
       TriggerEvent("esx_inventoryhud:openGloveboxInventory", data, inventory.blackMoney, inventory.items, inventory.weapons)

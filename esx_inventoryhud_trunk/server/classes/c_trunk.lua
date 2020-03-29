@@ -65,19 +65,12 @@ function CreateDataStore(plate, owned, data)
       timeoutCallbacks[i] = nil
     end
 
-    local timeoutCallback =
-      ESX.SetTimeout(
-      10000,
-      function()
-        MySQL.Async.execute(
-          "UPDATE trunk_inventory SET data = @data WHERE plate = @plate",
-          {
+    local timeoutCallback = ESX.SetTimeout(10000, function()
+        MySQL.Async.execute("UPDATE trunk_inventory SET data = @data WHERE plate = @plate", {
             ["@data"] = json.encode(self.data),
             ["@plate"] = self.plate
-          }
-        )
-      end
-    )
+        })
+      end)
 
     table.insert(timeoutCallbacks, timeoutCallback)
   end

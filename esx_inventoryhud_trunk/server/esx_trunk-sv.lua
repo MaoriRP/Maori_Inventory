@@ -1,35 +1,21 @@
 ESX = nil
 local arrayWeight = Config.localWeight
-local VehicleList = {}
-local VehicleInventory = {}
+local VehicleList, VehicleInventory = {}, {}
 
-TriggerEvent(
-  "esx:getSharedObject",
-  function(obj)
-    ESX = obj
-  end
-)
+TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
 
-AddEventHandler(
-  "onMySQLReady",
-  function()
+AddEventHandler("onMySQLReady", function()
     MySQL.Async.execute("DELETE FROM `trunk_inventory` WHERE `owned` = 0", {})
-  end
-)
+end)
 
 RegisterServerEvent("esx_trunk_inventory:getOwnedVehicule")
-AddEventHandler(
-  "esx_trunk_inventory:getOwnedVehicule",
-  function()
+AddEventHandler("esx_trunk_inventory:getOwnedVehicule", function()
     local vehicules = {}
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
-    MySQL.Async.fetchAll(
-      "SELECT * FROM owned_vehicles WHERE owner = @owner",
-      {
+    MySQL.Async.fetchAll("SELECT * FROM owned_vehicles WHERE owner = @owner", {
         ["@owner"] = xPlayer.identifier
-      },
-      function(result)
+      }, function(result)
         if result ~= nil and #result > 0 then
           for _, v in pairs(result) do
             local vehicle = json.decode(v.vehicle)
@@ -37,10 +23,8 @@ AddEventHandler(
           end
         end
         TriggerClientEvent("esx_trunk_inventory:setOwnedVehicule", _source, vehicules)
-      end
-    )
-  end
-)
+      end)
+end)
 
 function getItemWeight(item)
   local weight = 0
@@ -73,10 +57,7 @@ end
 
 function getTotalInventoryWeight(plate)
   local total
-  TriggerEvent(
-    "esx_trunk:getSharedDataStore",
-    plate,
-    function(store)
+  TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
       local W_weapons = getInventoryWeight(store.get("weapons") or {})
       local W_coffre = getInventoryWeight(store.get("coffre") or {})
       local W_blackMoney = 0
@@ -85,18 +66,12 @@ function getTotalInventoryWeight(plate)
         W_blackMoney = blackAccount[1].amount / 10
       end
       total = W_weapons + W_coffre + W_blackMoney
-    end
-  )
+    end)
   return total
 end
 
-ESX.RegisterServerCallback(
-  "esx_trunk:getInventoryV",
-  function(source, cb, plate)
-    TriggerEvent(
-      "esx_trunk:getSharedDataStore",
-      plate,
-      function(store)
+ESX.RegisterServerCallback("esx_trunk:getInventoryV", function(source, cb, plate)
+    TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
         local blackMoney = 0
         local items = {}
         local weapons = {}
@@ -119,27 +94,19 @@ ESX.RegisterServerCallback(
             items = items,
             weapons = weapons,
             weight = weight
-          }
-        )
-      end
-    )
-  end
-)
+        })
+      end)
+end)
 
 RegisterServerEvent("esx_trunk:getItem")
-AddEventHandler(
-  "esx_trunk:getItem",
-  function(plate, type, item, count, max, owned)
+AddEventHandler("esx_trunk:getItem", function(plate, type, item, count, max, owned)
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
 
     if type == "item_standard" then
       local targetItem = xPlayer.getInventoryItem(item)
       if targetItem.limit == -1 or xPlayer.canCarryItem then
-        TriggerEvent(
-          "esx_trunk:getSharedDataStore",
-          plate,
-          function(store)
+        TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
             local coffre = (store.get("coffre") or {})
             for i = 1, #coffre, 1 do
               if coffre[i].name == item then
@@ -179,8 +146,7 @@ AddEventHandler(
             text = _U("trunk_info", plate, (weight / 1000), (max / 1000))
             data = {plate = plate, max = max, myVeh = owned, text = text}
             TriggerClientEvent("esx_inventoryhud:refreshTrunkInventory", _source, data, blackMoney, items, weapons)
-          end
-        )
+          end)
       else
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("player_inv_no_space") } )
       end
@@ -220,15 +186,11 @@ AddEventHandler(
           else
             TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_amount") } )
           end
-        end
-      )
+        end)
     end
 
     if type == "item_weapon" then
-      TriggerEvent(
-        "esx_trunk:getSharedDataStore",
-        plate,
-        function(store)
+      TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
           local storeWeapons = store.get("weapons")
 
           if storeWeapons == nil then
@@ -273,16 +235,12 @@ AddEventHandler(
           text = _U("trunk_info", plate, (weight / 1000), (max / 1000))
           data = {plate = plate, max = max, myVeh = owned, text = text}
           TriggerClientEvent("esx_inventoryhud:refreshTrunkInventory", _source, data, blackMoney, items, weapons)
-        end
-      )
+        end)
     end
-  end
-)
+end)
 
 RegisterServerEvent("esx_trunk:putItem")
-AddEventHandler(
-  "esx_trunk:putItem",
-  function(plate, type, item, count, max, owned, label)
+AddEventHandler("esx_trunk:putItem", function(plate, type, item, count, max, owned, label)
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
     local xPlayerOwner = ESX.GetPlayerFromIdentifier(owner)
@@ -320,16 +278,12 @@ AddEventHandler(
               xPlayer.removeInventoryItem(item, count)
 			  store.set("coffre", coffre)
 
-              MySQL.Async.execute(
-                "UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate",
-                {
+              MySQL.Async.execute("UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate", {
                   ["@plate"] = plate,
                   ["@owned"] = owned
-                }
-              )
+              })
             end
-          end
-        )
+          end)
       else
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_quantity") } )
       end
@@ -339,10 +293,7 @@ AddEventHandler(
       local playerAccountMoney = xPlayer.getAccount(item).money
 
       if (playerAccountMoney >= count and count > 0) then
-        TriggerEvent(
-          "esx_trunk:getSharedDataStore",
-          plate,
-          function(store)
+        TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
             local blackMoney = (store.get("black_money") or nil)
             if blackMoney ~= nil then
               blackMoney[1].amount = blackMoney[1].amount + count
@@ -358,26 +309,19 @@ AddEventHandler(
               xPlayer.removeAccountMoney(item, count)
               store.set("black_money", blackMoney)
 
-              MySQL.Async.execute(
-                "UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate",
-                {
+              MySQL.Async.execute("UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate", {
                   ["@plate"] = plate,
                   ["@owned"] = owned
-                }
-              )
+              })
             end
-          end
-        )
+          end)
       else
         TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("invalid_amount") } )
       end
     end
 
     if type == "item_weapon" then
-      TriggerEvent(
-        "esx_trunk:getSharedDataStore",
-        plate,
-        function(store)
+      TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
           local storeWeapons = store.get("weapons")
 
           if storeWeapons == nil then
@@ -398,22 +342,15 @@ AddEventHandler(
             store.set("weapons", storeWeapons)
             xPlayer.removeWeapon(item)
 
-            MySQL.Async.execute(
-              "UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate",
-              {
+            MySQL.Async.execute("UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate", {
                 ["@plate"] = plate,
                 ["@owned"] = owned
-              }
-            )
+            })
           end
-        end
-      )
+        end)
     end
 
-    TriggerEvent(
-      "esx_trunk:getSharedDataStore",
-      plate,
-      function(store)
+    TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
         local blackMoney = 0
         local items = {}
         local weapons = {}
@@ -434,26 +371,16 @@ AddEventHandler(
         text = _U("trunk_info", plate, (weight / 1000), (max / 1000))
         data = {plate = plate, max = max, myVeh = owned, text = text}
         TriggerClientEvent("esx_inventoryhud:refreshTrunkInventory", _source, data, blackMoney, items, weapons)
-      end
-    )
-  end
-)
+      end)
+end)
 
-ESX.RegisterServerCallback(
-  "esx_trunk:getPlayerInventory",
-  function(source, cb)
+ESX.RegisterServerCallback("esx_trunk:getPlayerInventory", function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
     local blackMoney = xPlayer.getAccount("black_money").money
     local items = xPlayer.inventory
 
-    cb(
-      {
-        blackMoney = blackMoney,
-        items = items
-      }
-    )
-  end
-)
+    cb({blackMoney = blackMoney, items = items})
+end)
 
 function all_trim(s)
   if s then

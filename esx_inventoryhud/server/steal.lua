@@ -1,10 +1,6 @@
-ESX = nil
-
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
 RegisterServerEvent('ALERTAROBO')
 AddEventHandler('ALERTAROBO', function(source)
-	TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'Alguém Acabou de te Roubar',length = 8000})
+	TriggerClientEvent('mythic_notify:client:SendAlert', source, {type = 'error', text = 'Alguém Acabou de te Roubar',length = 8000})
 end)
 
 RegisterServerEvent('robo:jugador')
