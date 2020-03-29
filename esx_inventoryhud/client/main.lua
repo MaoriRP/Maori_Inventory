@@ -138,12 +138,16 @@ RegisterNUICallback("TakeFromTrunk", function(data, cb)
 end)
 
 RegisterNUICallback("UseItem", function(data, cb)
-        TriggerServerEvent("esx:useItem", data.item.name)
-        Citizen.Wait(500)
-        loadPlayerInventory()
+    TriggerServerEvent("esx:useItem", data.item.name)
 
-        cb("ok")
-    end)
+    if shouldCloseInventory(data.item.name) then
+        closeInventory()
+    else
+        Citizen.Wait(250)
+        loadPlayerInventory()
+    end
+    cb("ok")
+end)
 
 RegisterNUICallback("DropItem", function(data, cb)
 	if IsPedSittingInAnyVehicle(playerPed) then
