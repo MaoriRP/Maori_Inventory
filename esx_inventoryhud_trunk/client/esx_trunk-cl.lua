@@ -1,65 +1,40 @@
 ESX = nil
-local GUI = {}
-local PlayerData = {}
-local lastVehicle = nil
-local lastOpen = false
-GUI.Time = 0
-local vehiclePlate = {}
+local PlayerData, vehiclePlate = {}, {}
+local lastVehicle, entityWorld, globalplate
+local lastOpen, CloseToVehicle = false, false
 local arrayWeight = Config.localWeight
-local CloseToVehicle = false
-local entityWorld = nil
-local globalplate = nil
 local lastChecked = 0
 
-Citizen.CreateThread(
-  function()
-    while ESX == nil do
-      TriggerEvent(
-        "esx:getSharedObject",
-        function(obj)
-          ESX = obj
-        end
-      )
-      Citizen.Wait(0)
-    end
-  end
-)
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
 
 RegisterNetEvent("esx:playerLoaded")
-AddEventHandler(
-  "esx:playerLoaded",
-  function(xPlayer)
+AddEventHandler("esx:playerLoaded", function(xPlayer)
     PlayerData = xPlayer
     TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
-AddEventHandler(
-  "onResourceStart",
-  function()
+AddEventHandler("onResourceStart", function()
     PlayerData = xPlayer
     TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
-RegisterNetEvent("esx:setJob")
-AddEventHandler(
-  "esx:setJob",
-  function(job)
-    PlayerData.job = job
-  end
-)
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+	PlayerData.job = job
+end)
 
 RegisterNetEvent("esx_trunk_inventory:setOwnedVehicule")
-AddEventHandler(
-  "esx_trunk_inventory:setOwnedVehicule",
-  function(vehicle)
+AddEventHandler("esx_trunk_inventory:setOwnedVehicule", function(vehicle)
     vehiclePlate = vehicle
     --print("vehiclePlate: ", ESX.DumpTable(vehiclePlate))
-  end
-)
+end)
 
 function getItemyWeight(item)
   local weight = 0
@@ -147,7 +122,6 @@ function openmenuvehicle()
           exports['mythic_notify']:SendAlert('error', _U("no_veh_nearby"))
         end
         lastOpen = true
-        GUI.Time = GetGameTimer()
       end
     else
       exports['mythic_notify']:SendAlert('error', _U("nacho_veh"))
@@ -157,20 +131,16 @@ end
 local count = 0
 
 -- Key controls
-Citizen.CreateThread(
-  function()
+Citizen.CreateThread(function()
     while true do
-      Wait(0)
-      if IsControlJustReleased(0, Config.OpenKey) and (GetGameTimer() - GUI.Time) > 1000 then
+      Citizen.Wait(0)
+      if IsControlJustReleased(0, Config.OpenKey) then
         openmenuvehicle()
-        GUI.Time = GetGameTimer()
       end
     end
-  end
-)
+end)
 
-Citizen.CreateThread(
-  function()
+Citizen.CreateThread(function()
     while true do
       Wait(0)
       local pos = GetEntityCoords(GetPlayerPed(-1))
@@ -186,28 +156,21 @@ Citizen.CreateThread(
         end
       end
     end
-  end
-)
+end)
 
 RegisterNetEvent("esx:playerLoaded")
-AddEventHandler(
-  "esx:playerLoaded",
-  function(xPlayer)
+AddEventHandler("esx:playerLoaded", function(xPlayer)
     PlayerData = xPlayer
     TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
     lastChecked = GetGameTimer()
-  end
-)
+end)
 
 function OpenCoffreInventoryMenu(plate, max, myVeh)
-  ESX.TriggerServerCallback(
-    "esx_trunk:getInventoryV",
-    function(inventory)
+  ESX.TriggerServerCallback("esx_trunk:getInventoryV", function(inventory)
       text = _U("trunk_info", plate, (inventory.weight / 1000), (max / 1000))
       data = {plate = plate, max = max, myVeh = myVeh, text = text}
       TriggerEvent("esx_inventoryhud:openTrunkInventory", data, inventory.blackMoney, inventory.items, inventory.weapons)
-    end,
-    plate
+    end, plate
   )
 end
 
