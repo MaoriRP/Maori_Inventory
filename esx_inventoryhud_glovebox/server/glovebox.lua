@@ -1,21 +1,9 @@
-ESX = nil
 Items = {}
-local DataStoresIndex = {}
-local DataStores = {}
-local SharedDataStores = {}
+local DataStores, SharedDataStores, DataStoresIndex = {}, {}, {}
 
 local listPlate = Config.VehiclePlate
 
-TriggerEvent(
-  "esx:getSharedObject",
-  function(obj)
-    ESX = obj
-  end
-)
-
-AddEventHandler(
-  "onMySQLReady",
-  function()
+AddEventHandler("onMySQLReady", function()
     local result = MySQL.Sync.fetchAll("SELECT * FROM glovebox_inventory")
     local data = nil
     if #result ~= 0 then
@@ -27,17 +15,13 @@ AddEventHandler(
         SharedDataStores[plate] = dataStore
       end
     end
-  end
-)
+end)
 
 function loadInvent(plate)
   local result =
-    MySQL.Sync.fetchAll(
-    "SELECT * FROM glovebox_inventory WHERE plate = @plate",
-    {
+    MySQL.Sync.fetchAll("SELECT * FROM glovebox_inventory WHERE plate = @plate", {
       ["@plate"] = plate
-    }
-  )
+	})
   local data = nil
   if #result ~= 0 then
     for i = 1, #result, 1 do
@@ -83,13 +67,10 @@ function MakeDataStore(plate)
   local owned = getOwnedVehicle(plate)
   local dataStore = CreateDataStore(plate, owned, data)
   SharedDataStores[plate] = dataStore
-  MySQL.Async.execute(
-    "INSERT INTO glovebox_inventory(plate,data,owned) VALUES (@plate,'{}',@owned)",
-    {
+  MySQL.Async.execute("INSERT INTO glovebox_inventory(plate,data,owned) VALUES (@plate,'{}',@owned)", {
       ["@plate"] = plate,
       ["@owned"] = owned
-    }
-  )
+  })
   loadInvent(plate)
 end
 
@@ -100,9 +81,6 @@ function GetSharedDataStore(plate)
   return SharedDataStores[plate]
 end
 
-AddEventHandler(
-  "esx_glovebox:getSharedDataStore",
-  function(plate, cb)
+AddEventHandler("esx_glovebox:getSharedDataStore", function(plate, cb)
     cb(GetSharedDataStore(plate))
-  end
-)
+end)
