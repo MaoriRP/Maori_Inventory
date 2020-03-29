@@ -45,24 +45,24 @@ AddEventHandler("esx_inventoryhud:tradePlayerItem", function(from, target, type,
 				targetXPlayer.addWeapon(itemName, itemCount)
 			end
 		end
-	end)
+end)
 
 RegisterCommand("openinventory", function(source, args, rawCommand)
-		if IsPlayerAceAllowed(source, "inventory.openinventory") then
-			local target = tonumber(args[1])
-			local targetXPlayer = ESX.GetPlayerFromId(target)
+	if IsPlayerAceAllowed(source, "inventory.openinventory") then
+		local target = tonumber(args[1])
+		local targetXPlayer = ESX.GetPlayerFromId(target)
 
-			if targetXPlayer ~= nil then
-				TriggerClientEvent("esx_inventoryhud:openPlayerInventory", source, target, targetXPlayer.name)
-			else
-				TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("no_player") })
-				TriggerClientEvent("chatMessage", source, "^1" .. _U("no_player"))
-			end
+		if targetXPlayer ~= nil then
+			TriggerClientEvent("esx_inventoryhud:openPlayerInventory", source, target, targetXPlayer.name)
+		else
+			TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("no_player") })
+			TriggerClientEvent("chatMessage", source, "^1" .. _U("no_player"))
+		end
 		else
 			TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("no_permissions") })
 			TriggerClientEvent("chatMessage", source, "^1" .. _U("no_permissions"))
-		end
-	end)
+	end
+end)
 
 RegisterServerEvent("suku:sendShopItems")
 AddEventHandler("suku:sendShopItems", function(source, itemList)
