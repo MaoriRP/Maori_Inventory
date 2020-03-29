@@ -7,25 +7,23 @@ local fastWeapons = {
 	[3] = nil
 }
 
-Citizen.CreateThread(
-    function()
-        while ESX == nil do
-            TriggerEvent("esx:getSharedObject", function(obj) ESX = obj end)
-            Citizen.Wait(0)
-        end
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+    end
 end)
 
-Citizen.CreateThread(
-    function()
-        while true do
-            Citizen.Wait(0)
-            if IsControlJustReleased(0, Config.OpenControl) and IsInputDisabled(0) then
-                TriggerScreenblurFadeIn(0)
-                Citizen.Wait(50)
-                openInventory()
-            end
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(0)
+        if IsControlJustReleased(0, Config.OpenControl) and IsInputDisabled(0) then
+			TriggerScreenblurFadeIn(0)
+            Citizen.Wait(50)
+            openInventory()
         end
-    end)
+    end
+end)
 
 function openInventory()
     loadPlayerInventory()
@@ -137,7 +135,7 @@ RegisterNUICallback("TakeFromTrunk", function(data, cb)
         loadPlayerInventory()
 
         cb("ok")
-    end)
+end)
 
 RegisterNUICallback("UseItem", function(data, cb)
         TriggerServerEvent("esx:useItem", data.item.name)
@@ -160,7 +158,7 @@ RegisterNUICallback("DropItem", function(data, cb)
         loadPlayerInventory()
 
         cb("ok")
-    end)
+end)
 
 RegisterNUICallback("GiveItem", function(data, cb)
 	local playerPed = PlayerPedId()
@@ -386,8 +384,7 @@ function loadPlayerInventory()
                     itemList = items,
                     fastItems = fastItems,
 					text = texts
-                }
-            )	
+                })	
         end, GetPlayerServerId(PlayerId())
     )
 end
@@ -463,8 +460,7 @@ function setTrunkInventoryData(data, blackMoney, inventory, weapons)
                         usable = false,
                         rare = false,
                         canRemove = false
-                    }
-                )
+                    })
             end
         end
     end
@@ -538,7 +534,7 @@ Citizen.CreateThread(
                 DisableControlAction(27, 75, true) -- Disable exit vehicle
             end
         end
-    end)
+end)
 
 -- HIDE WEAPON WHEEL
 Citizen.CreateThread(function ()
@@ -570,8 +566,7 @@ RegisterNUICallback("TakeFromFast", function(data, cb)
 	cb("ok")
 end)
 
-Citizen.CreateThread(
-    function()
+Citizen.CreateThread(function()
 		while true do
             Citizen.Wait(0)
             if IsDisabledControlJustReleased(1, 157) then
