@@ -1,13 +1,13 @@
-Locales["cs"] = {
-    ["glovebox_closed"] = "Kufr tohoto vozidla je zavřený.",
-    ["no_veh_nearby"] = "Není u tebe žádné vozidlo.",
-    ["glovebox_in_use"] = "Tento kufr již někdo používá.",
-    ["glovebox_full"] = "Tento kufr je plný.",
-    ["invalid_quantity"] = "Špatný počet!",
-    ["cant_carry_more"] = "Více toho neuneseš.",
-    ["nacho_veh"] = "Toto není tvoje vozidlo.",
-    ["invalid_amount"] = "Špatný počet!",
-    ["insufficient_space"] = "Nedostatek místa!",
-    ["glovebox_info"] = "<h3>Kufr vozidla</h3><br><strong>SPZ:</strong> %s<br><strong>Kapacita:</strong> %s / %s",
-    ["player_inv_no_space"] = "Tolik toho mít v inventáři nemůžeš!"
+Locales['cs'] = {
+    ['glovebox_closed'] = 'přihrádka tohoto vozidla je zavřený.',
+    ['no_veh_nearby'] = 'není u tebe žádné vozidlo.',
+    ['glovebox_in_use'] = 'tento kufr již někdo používá.',
+    ['glovebox_full'] = 'tento kufr je plný.',
+    ['invalid_quantity'] = 'špatné množství!',
+    ['cant_carry_more'] = 'více toho neuneseš.',
+    ['nacho_veh'] = 'toto není tvoje vozidlo.',
+    ['invalid_amount'] = 'Špatné množství!',
+    ['insufficient_space'] = 'nedostatek místa!',
+    ['glovebox_info'] = '<h3>Přihrádka vozidla</h3><br><strong>SPZ:</strong> %s<br><strong>Kapacita:</strong> %s / %s',
+    ['player_inv_no_space'] = 'Tolik toho mít v inventáři nemůžeš!'
 }
