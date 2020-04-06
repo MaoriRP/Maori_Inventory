@@ -4,7 +4,20 @@ local DataStoresIndex, DataStores, SharedDataStores = {}, {}, {}
 Items = {}
 
 AddEventHandler("onMySQLReady", function()
+    local result = MySQL.Sync.fetchAll("SELECT * FROM trunk_inventory")
+    local data
+
     MySQL.Async.execute("DELETE FROM `trunk_inventory` WHERE `owned` = 0", {})
+
+    if #result ~= 0 then
+      for i = 1, #result, 1 do
+        local plate = result[i].plate
+        local owned = result[i].owned
+        local data = (result[i].data == nil and {} or json.decode(result[i].data))
+        local dataStore = CreateDataStore(plate, owned, data)
+        SharedDataStores[plate] = dataStore
+      end
+    end
 end)
 
 RegisterServerEvent("esx_trunk_inventory:getOwnedVehicule")
@@ -388,20 +401,6 @@ function all_trim(s)
     return "noTagProvided"
   end
 end
-
-AddEventHandler("onMySQLReady", function()
-    local result = MySQL.Sync.fetchAll("SELECT * FROM trunk_inventory")
-    local data = nil
-    if #result ~= 0 then
-      for i = 1, #result, 1 do
-        local plate = result[i].plate
-        local owned = result[i].owned
-        local data = (result[i].data == nil and {} or json.decode(result[i].data))
-        local dataStore = CreateDataStore(plate, owned, data)
-        SharedDataStores[plate] = dataStore
-      end
-    end
-end)
 
 function loadInvent(plate)
   local result =
