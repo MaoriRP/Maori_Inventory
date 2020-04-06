@@ -19,7 +19,7 @@ end)
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
-	PlayerData.job = job
+	ESX.PlayerData.job = job
 end)
 
 RegisterNetEvent("esx_trunk_inventory:setOwnedVehicule")
@@ -81,7 +81,7 @@ function openmenuvehicle()
       end
     end
 
-    if not Config.CheckOwnership or (Config.AllowPolice and PlayerData.job.name == "police") or (Config.CheckOwnership and myVeh) then
+    if not Config.CheckOwnership or (Config.AllowPolice and ESX.PlayerData.job.name == "police") or (Config.CheckOwnership and myVeh) then
       if globalplate ~= nil or globalplate ~= "" or globalplate ~= " " then
         CloseToVehicle = true
         local vehFront = VehicleInFront()
