@@ -165,10 +165,7 @@ AddEventHandler("esx_trunk:getItem", function(plate, type, item, count, max, own
     end
 
     if type == "item_account" then
-      TriggerEvent(
-        "esx_trunk:getSharedDataStore",
-        plate,
-        function(store)
+      TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
           local blackMoney = store.get("black_money")
           if (blackMoney[1].amount >= count and count > 0) then
             blackMoney[1].amount = blackMoney[1].amount - count
@@ -261,10 +258,7 @@ AddEventHandler("esx_trunk:putItem", function(plate, type, item, count, max, own
       local playerItemCount = xPlayer.getInventoryItem(item).count
 
       if (playerItemCount >= count and count > 0) then
-        TriggerEvent(
-          "esx_trunk:getSharedDataStore",
-          plate,
-          function(store)
+        TriggerEvent("esx_trunk:getSharedDataStore", plate, function(store)
             local found = false
             local coffre = (store.get("coffre") or {})
 
@@ -280,15 +274,14 @@ AddEventHandler("esx_trunk:putItem", function(plate, type, item, count, max, own
                 {
                   name = item,
                   count = count
-                }
-              )
+                })
             end
             if (getTotalInventoryWeight(plate) + (getItemWeight(item) * count)) > max then
               TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = _U("insufficient_space") } )
             else
               -- Checks passed, storing the item.
               xPlayer.removeInventoryItem(item, count)
-			  store.set("coffre", coffre)
+	      store.set("coffre", coffre)
 
               MySQL.Async.execute("UPDATE trunk_inventory SET owned = @owned WHERE plate = @plate", {
                   ["@plate"] = plate,
