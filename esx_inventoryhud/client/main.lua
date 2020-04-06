@@ -22,6 +22,10 @@ Citizen.CreateThread(function()
             Citizen.Wait(50)
             openInventory()
         end
+		
+      if IsControlJustReleased(0, Config.OpenKey) then
+        openmenuvehicle()
+      end
     end
 end)
 
