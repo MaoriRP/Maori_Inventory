@@ -1,4 +1,3 @@
-local PlayerData = {}
 local roboestado = false
 
 RegisterCommand('roubar', function(source, args)
@@ -16,7 +15,6 @@ Citizen.CreateThread(function()
 		else
 		  robo()
 		end
-
  end
 	end
 end)
