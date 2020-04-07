@@ -21,7 +21,8 @@ client_scripts {
   'client/disc-property.lua',
   'client/player.lua',
   'client/steal.lua',
-  'config.lua'
+  'config.lua',
+  'client/trunk.lua'
 }
 
 server_scripts {
@@ -34,7 +35,9 @@ server_scripts {
   'locales/cs.lua',
   'locales/fr.lua',
   'locales/pt.lua',
-  'config.lua'
+  'config.lua',
+  'server/classes/c_trunk.lua',
+  'server/trunk.lua'
 }
 
 files {
@@ -56,6 +59,6 @@ files {
 }
 
 dependencies {
-	'es_extended',
-	'mythic_notify'
+  'es_extended',
+  'mythic_notify'
 }

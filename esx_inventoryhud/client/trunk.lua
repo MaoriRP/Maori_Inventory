@@ -1,19 +1,11 @@
-ESX = nil
 local PlayerData, vehiclePlate = {}, {}
 local lastVehicle, entityWorld, globalplate
 local lastOpen, CloseToVehicle = false, false
 local arrayWeight = Config.localWeight
 local lastChecked = 0
 
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
-end)
-
-RegisterNetEvent("esx:playerLoaded")
-AddEventHandler("esx:playerLoaded", function(xPlayer)
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
     PlayerData = xPlayer
     TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
     lastChecked = GetGameTimer()
@@ -27,7 +19,7 @@ end)
 
 RegisterNetEvent('esx:setJob')
 AddEventHandler('esx:setJob', function(job)
-	PlayerData.job = job
+	ESX.PlayerData.job = job
 end)
 
 RegisterNetEvent("esx_trunk_inventory:setOwnedVehicule")
@@ -89,7 +81,7 @@ function openmenuvehicle()
       end
     end
 
-    if not Config.CheckOwnership or (Config.AllowPolice and PlayerData.job.name == "police") or (Config.CheckOwnership and myVeh) then
+    if not Config.CheckOwnership or (Config.AllowPolice and ESX.PlayerData.job.name == "police") or (Config.CheckOwnership and myVeh) then
       if globalplate ~= nil or globalplate ~= "" or globalplate ~= " " then
         CloseToVehicle = true
         local vehFront = VehicleInFront()
@@ -128,17 +120,8 @@ function openmenuvehicle()
     end
   end
 end
-local count = 0
 
--- Key controls
-Citizen.CreateThread(function()
-    while true do
-      Citizen.Wait(0)
-      if IsControlJustReleased(0, Config.OpenKey) then
-        openmenuvehicle()
-      end
-    end
-end)
+local count = 0
 
 Citizen.CreateThread(function()
     while true do
@@ -156,13 +139,6 @@ Citizen.CreateThread(function()
         end
       end
     end
-end)
-
-RegisterNetEvent("esx:playerLoaded")
-AddEventHandler("esx:playerLoaded", function(xPlayer)
-    PlayerData = xPlayer
-    TriggerServerEvent("esx_trunk_inventory:getOwnedVehicule")
-    lastChecked = GetGameTimer()
 end)
 
 function OpenCoffreInventoryMenu(plate, max, myVeh)

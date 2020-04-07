@@ -11,7 +11,7 @@ Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Citizen.Wait(0)
-    end
+    	end
 end)
 
 Citizen.CreateThread(function()
@@ -22,6 +22,10 @@ Citizen.CreateThread(function()
             Citizen.Wait(50)
             openInventory()
         end
+		
+      if IsControlJustReleased(0, Config.OpenKey) then
+        openmenuvehicle()
+      end
     end
 end)
 

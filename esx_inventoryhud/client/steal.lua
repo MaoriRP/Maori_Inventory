@@ -1,14 +1,4 @@
-ESX = nil
-
-local PlayerData = {}
 local roboestado = false
-
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
-end)
 
 RegisterCommand('roubar', function(source, args)
 	TriggerEvent('OpenBodySearchMenu')
@@ -25,7 +15,6 @@ Citizen.CreateThread(function()
 		else
 		  robo()
 		end
-
  end
 	end
 end)
