@@ -253,7 +253,6 @@ function loadPlayerInventory()
             weapons = data.weapons
 
             if Config.IncludeCash and money ~= nil and money > 0 then
-                for key, value in pairs(accounts) do
                     moneyData = {
                         label = _U("cash"),
                         name = "cash",
@@ -266,7 +265,6 @@ function loadPlayerInventory()
                     }
 
                     table.insert(items, moneyData)
-                end
             end
 
             if Config.IncludeAccounts and accounts ~= nil then
