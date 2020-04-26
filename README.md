@@ -11,4 +11,7 @@ Features:
 -Stealing
 -Shops
 
-Ty to Scrubz#0001 for helping me out in this project
+Credits:
+
+-Ty to Scrubz#0001 for helping me out in this project
+-Ty to the Original esx_inventoryhud resource made by Trsak
