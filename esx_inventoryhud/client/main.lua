@@ -183,15 +183,21 @@ RegisterNUICallback("GiveItem", function(data, cb)
 	if foundPlayer then
 		local count = tonumber(data.number)
 
-		if data.item.type == "item_weapon" then
-			count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
-		end
+        if data.item.type == "item_weapon" then
+            count = GetAmmoInPedWeapon(PlayerPedId(), GetHashKey(data.item.name))
+        end
 
-            TriggerServerEvent("esx:giveInventoryItem", data.player, data.item.type, data.item.name, count)
-            Wait(500)
-            loadPlayerInventory()
+        if data.item.type == "item_money" then
+            TriggerServerEvent("esx:giveInventoryItem", data.player, "item_account", "money", count)
         else
+            TriggerServerEvent("esx:giveInventoryItem", data.player, data.item.type, data.item.name, count)
+        end
+        Wait(250)
+        loadPlayerInventory()
+    else
+
             exports['mythic_notify']:SendAlert('error', _U("player_nearby"))
+
             --[[exports.pNotify:SendNotification(
                 {
                     text = _U("player_nearby"),
