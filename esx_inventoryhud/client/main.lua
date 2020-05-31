@@ -613,7 +613,7 @@ Citizen.CreateThread(function()
 					end
 				end
             end
-            if IsDisabledControlJustReleased(1, 166) then
+            if IsDisabledControlJustReleased(1, 165) then
                 if fastWeapons[5] ~= nil then
 					if GetSelectedPedWeapon(GetPlayerPed(-1)) == GetHashKey(fastWeapons[5]) then
 						SetCurrentPedWeapon(GetPlayerPed(-1), "WEAPON_UNARMED",true)
