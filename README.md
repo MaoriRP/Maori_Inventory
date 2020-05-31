@@ -1,4 +1,4 @@
-# PROJECT ABANDONED FOR NOW WHILE I WORK ON ANOTHER PROJECT
+# PROJECT ABANDONED
 This Project has been put on hold for now while I Work on a New Framework - Next Gen so do not dm me on discord that I am not giving support.
 
 # Maori_Inventory
